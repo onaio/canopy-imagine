@@ -1,0 +1,32 @@
+version: 2
+
+sources:
+    - name: airbyte
+      database: imagine
+      schema: airbyte
+      tables:
+        - name: terms
+        - name: country_metrics
+        - name: device_allocation
+        - name: devices
+        - name: grade_names
+        - name: grades
+        - name: inventory_allocation
+        - name: location_enrollments
+        - name: locations 
+        - name: partners
+        - name: staff 
+    - name: csv
+      database: imagine
+      schema: csv
+      tables:
+        #AP. 2022.07.07. note: this table is here only for now. Needs to be replaced once sessions is in its final state (update stg_sessions to pull from the right source)
+        - name: tablet_sessions  
+
+    - name: ona_data
+      database: imagine
+      schema: ona_data  
+      tables:
+        - name: monitoring_crs_pilot
+        - name: monitoring_crs_pilot_tablet_repeat
+        - name: monitoring_crs_pilot_decommission_repeat
