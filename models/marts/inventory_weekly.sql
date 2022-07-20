@@ -2,8 +2,8 @@
 -- needs testing with updated dataset due to missing records
 with inventory_table as (
 select
-	ms.school_id as location_id,
-	ms.school as location_name,
+	l.id as location_id,
+	l.name as location_name,
 	tw.term_id,
 	tw.week as week,
     tw.week_number as term_week, 
@@ -22,8 +22,9 @@ select
 		when ia.inventory_type = 'charge cable' then ms.cable_replacements
 		when ia.inventory_type = 'screen protector' then ms.protector_replacements else null end as needs_replacement
 from {{ref('stg_term_weeks')}} tw
-left join {{ref('monitoring_survey')}} ms on ms.week = tw.week and tw.term_id = ms.term_id 
-left join {{source('airbyte', 'inventory_allocation')}} ia on ia.location_id = ms.school_id and ia.term_id = tw.term_id
+left join {{ref('stg_locations')}} l on tw.term_country = l.country 
+left join {{ref('monitoring_survey')}} ms on ms.week = tw.week and tw.term_id = ms.term_id and ms.location_id = l.id
+left join {{source('airbyte', 'inventory_allocation')}} ia on ia.location_id = ms.location_id and ia.term_id = tw.term_id
 )
 
 select 
@@ -39,5 +40,5 @@ select
 	added,
 	removed,
 	needs_replacement
-from inventory_table
-where location_id is not null
+from inventory_table i 
+--where location_id is not null
