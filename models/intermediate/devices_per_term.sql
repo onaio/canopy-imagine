@@ -1,5 +1,3 @@
-
-
 select 
 	da.id,
 	da.term_id,
