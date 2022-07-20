@@ -1,0 +1,1 @@
+select * from {{source('airbyte', 'device_allocation')}}

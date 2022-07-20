@@ -1,0 +1,1 @@
+select * from {{source('csv', 'tablet_sessions')}}
