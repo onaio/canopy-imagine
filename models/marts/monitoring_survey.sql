@@ -23,11 +23,11 @@ ms.id as submission_id,
 ms.uuid,
 ms.start,
 ms.end,
-s.country,
+l.country,
 f.name as field_officer,
-s.id as school_id,
-s."name" as school,
-s.admin_3_name as location,
+l.id as location_id,
+l."name" as location,
+l.admin_3_name as admin_3_name,
 ms.observation_date,
 ms.setup_observations,
 ms.tablet_use_observations,
@@ -56,17 +56,15 @@ ms.cable_replacements,
 ms.protector_replacements,
 ms.other_replacement_obs,
 ms.submitted_at,
-ms.submission_review_status,
-ms.submission_review_comment,
 ms.submission_submitted_by,
 date_trunc('week', ms.observation_date::timestamp)::date as week, 
 tw.term_id,
 tw.term_name,
 tw.week_number as term_week
 from {{ref('stg_monitoring_survey')}}  ms 
-left join {{ref('stg_locations') }} s on LTRIM(ms.school_name, 's') = s.id::VARCHAR 
+left join {{ref('stg_locations') }} l on ms.location_id = l.id::VARCHAR 
 left join {{ref('stg_term_weeks')}}  tw on 
-	s.country = tw.term_country and
+	l.country = tw.term_country and
 	date_trunc('week',(ms.observation_date::date)) = tw.week 
 left join tablet_delivery t on t.parent_id = ms.id
 left join tablet_decommissioned d on d.parent_id = ms.id
