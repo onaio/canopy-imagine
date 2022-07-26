@@ -1,3 +1,4 @@
+
 ------ reporting.inventory_weekly
 --1. find different inventory types
 {%- set inventory_types = ['tablet', 'headset', 'charge cable', 'screen protector'] -%}
@@ -38,9 +39,9 @@ select
 	term_week,
 	inventory_type,
 	expected,
-	(sum(coalesce(delivered,0)-coalesce(decommissioned,0)) over (partition by location_id, inventory_type order by term_week)) as actual,
-	delivered,
-	decommissioned,
-	to_replace
+	(sum(coalesce(delivered,0)-coalesce(decommissioned,0)) over (partition by location_id, inventory_type, term_id order by term_week)) as actual,
+	coalesce(delivered,0) as delivered,
+	coalesce(decommissioned,0) as decommissioned,
+	coalesce(to_replace,0) as to_replace
 from inventory_table i 
 order by term_id, location_id, term_week

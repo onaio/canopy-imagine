@@ -1,6 +1,6 @@
 {% macro grant_select(schema=target.schema, user=target.user) %}
 
-  {% if target.name == 'default' %}     {# runs only if the target for the job is the dbt schema, therefore only if the job is running in prod #}
+  {% if target.name == 'default' %}     runs only if the target for the job is the dbt schema, therefore only if the job is running in prod #}
 
   {% set sql %}
   grant usage on schema {{ schema }} to  {{ user }};
@@ -11,7 +11,6 @@
   {% do run_query(sql) %}
   {{ log('Privileges granted', info=True) }}
 
-
-  {% endif %}
+  {% endif %}  
 
 {% endmacro %}
