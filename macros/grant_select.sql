@@ -7,7 +7,7 @@
   grant select on all tables in schema {{ schema }} to {{ user }};
   {% endset %}
 
-  {{ log('Granting select on all tables and views in schema ' ~ target.schema ~ ' to role ' ~ role, info=True) }}
+  {{ log('Granting select on all tables and views in schema ' ~ target.schema ~ ' to role ' ~ user, info=True) }}
   {% do run_query(sql) %}
   {{ log('Privileges granted', info=True) }}
 
