@@ -13,6 +13,8 @@ select
 	td.day,
 	tw.week,
 	tw.week_number as term_week,
+	tw.term_id,
+	tw.term_name,
 	se.location_id,
 	se.location,
 	se.country,
@@ -23,13 +25,15 @@ left join {{ref('stg_term_weeks')}} tw on date_trunc('week',(td.day::date)) = tw
 left join {{ref('sessions')}} se on date_trunc('day',(se.start_time::date)) = td.day and td.term_id = se.term_id 
 left join {{source('airbyte','country_metrics')}} cm on cm.country = se.country
 left join child_enrollment ce on ce.term_id = se.term_id and ce.location_id = se.location_id 
-group by 1,2,3,4,5,6
+group by 1,2,3,4,5,6,7,8
 ) 
 
 select 
 	day,
 	week,
 	term_week,
+	term_id,
+	term_name, 
 	location_id,
 	location,
 	country,

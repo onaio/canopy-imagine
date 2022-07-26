@@ -1,19 +1,17 @@
--- work in progress!! 
-
 with tablet_delivery as (
 select 
 	tr.parent_id,
-	count (tr.distributed_tablets) as tablet_delivery,
-	string_agg(tr.distributed_tablets, ',') as tablet_delivery_ids
+	count (tr.distributed_tablets) as tablets_delivered,
+	string_agg(tr.distributed_tablets, ',') as tablet_ids_delivered
 from {{ref('stg_monitoring_survey_tablet_repeat')}}  tr
 group by 1
 
 ), tablet_decommissioned AS (
 select 
 	td.parent_id,
-	count (td.decommissioned_tablets) as decommissioned_tablets,
-	string_agg(td.decommission_date::VARCHAR, ',') as decommissioned_tablet_dates,
-	string_agg(td.decommissioned_tablets, ',') as decommissioned_tablet_ids
+	count (td.decommissioned_tablets) as tablets_decommissioned,
+	string_agg(td.decommission_date::VARCHAR, ',') as tablets_decommission_date,
+	string_agg(td.decommissioned_tablets, ',') as tablet_ids_decommissioned
 from {{ref('stg_monitoring_survey_decommission_repeat')}}  td
 group by 1
 )
@@ -37,23 +35,23 @@ ms.session_rating,
 ms.other_session_obs,
 ms.distribution,
 ms.distributed_equipment,
-t.tablet_delivery,
-t.tablet_delivery_ids,
-ms.headset_delivery,
-ms.cable_delivery,
-ms.protector_delivery,
-ms.decommission_tablet,
+t.tablets_delivered,
+t.tablet_ids_delivered,
+ms.headsets_delivered,
+ms.cables_delivered,
+ms.protectors_delivered,
+ms.decommission_tablets, 
 ms.other_decommission,
-d.decommissioned_tablets,
-d.decommissioned_tablet_ids,
-ms.decommissioned_headsets,
-ms.decommissioned_cables,
-ms.decommisioned_protectors,
+d.tablets_decommissioned,
+d.tablet_ids_decommissioned,
+ms.headsets_decommissioned,
+ms.cables_decommissioned,
+ms.protectors_decommissioned,
 ms.replacements,
-ms.tablet_replacements,
-ms.headset_replacements,
-ms.cable_replacements,
-ms.protector_replacements,
+ms.tablets_to_replace,
+ms.headsets_to_replace,
+ms.cables_to_replace,
+ms.protectors_to_replace,
 ms.other_replacement_obs,
 ms.submitted_at,
 ms.submission_submitted_by,
