@@ -35,5 +35,5 @@ models:
   my_new_project:
     # Applies to all files under models/example/
 
-    marts:
-      materialized: table
+  marts:
+    materialized: table
