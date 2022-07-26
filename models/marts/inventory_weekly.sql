@@ -27,9 +27,25 @@ from {{ref('stg_term_weeks')}} tw
 left join {{ref('stg_locations')}} l on tw.term_country = l.country 
 left join {{ref('monitoring_survey')}} ms on ms.week = tw.week and tw.term_id = ms.term_id and ms.location_id = l.id
 left join {{source('airbyte', 'inventory_allocation')}} ia on ia.location_id = l.id and ia.term_id = tw.term_id
+),
+-- 3. Weekly inventory table. Used if there are more than one survey for one location per week 
+weekly_inventory as (
+select
+	location_id,
+	location_name,
+	term_id,
+    week,
+	term_week,
+	inventory_type,
+	expected,
+	sum(coalesce(delivered,0)) as delivered,
+	sum(coalesce(decommissioned,0)) as decommissioned,
+	sum(coalesce(to_replace,0)) as to_replace
+from inventory_table  
+group by 1,2,3,4,5,6,7
 )
 
--- 3. Final table with weekly updates
+-- 4. Final table with weekly updates
 select 
 	row_number() over( order by location_id) as id,
 	location_id,
@@ -40,8 +56,8 @@ select
 	inventory_type,
 	expected,
 	(sum(coalesce(delivered,0)-coalesce(decommissioned,0)) over (partition by location_id, inventory_type, term_id order by term_week)) as actual,
-	coalesce(delivered,0) as delivered,
-	coalesce(decommissioned,0) as decommissioned,
-	coalesce(to_replace,0) as to_replace
-from inventory_table i 
+	delivered,
+	decommissioned,
+	to_replace
+from weekly_inventory i 
 order by term_id, location_id, term_week
