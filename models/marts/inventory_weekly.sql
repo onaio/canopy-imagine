@@ -12,6 +12,7 @@ select
 	tw.term_id,
 	tw.week as week,
     tw.week_number as term_week, 
+	tw.term_name,
 	ia.inventory_type,
 	ia.quantity as expected,
 	{%- for movement in ['delivered', 'decommissioned', 'to_replace'] -%}
@@ -36,13 +37,14 @@ select
 	term_id,
     week,
 	term_week,
+	term_name,
 	inventory_type,
 	expected,
 	sum(coalesce(delivered,0)) as delivered,
 	sum(coalesce(decommissioned,0)) as decommissioned,
 	sum(coalesce(to_replace,0)) as to_replace
 from inventory_table  
-group by 1,2,3,4,5,6,7
+group by 1,2,3,4,5,6,7,8
 )
 
 -- 4. Final table with weekly updates
@@ -53,6 +55,7 @@ select
 	term_id,
     week,
 	term_week,
+	term_name,
 	inventory_type,
 	expected,
 	(sum(coalesce(delivered,0)-coalesce(decommissioned,0)) over (partition by location_id, inventory_type, term_id order by term_week)) as actual,
