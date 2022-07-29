@@ -69,4 +69,5 @@ select
 		) over (partition by location_id, inventory_type, term_id order by term_week) as cumulative_delivered,
 	sum(decommissioned) over (partition by location_id, inventory_type, term_id order by term_week) as cumulative_decommissioned 
 from weekly_inventory i 
+where inventory_type is not null
 order by term_id, location_id, term_week
