@@ -61,9 +61,13 @@ select
 	term_name,
 	inventory_type,
 	expected,
-	(sum(coalesce(delivered,0)-coalesce(decommissioned,0)) over (partition by location_id, inventory_type, term_id order by term_week)) as actual,
-	delivered,
+	(sum(delivered - decommissioned) over (partition by location_id, inventory_type, term_id order by term_week)) as actual,
+	case when term_week = 1 then 0 else delivered end as delivered,   -- accounts for the fact that the week1 deliveries are not happening in the field
 	decommissioned,
-	to_replace
+	to_replace,
+	sum(case when term_week = 1 then 0 else delivered end
+		) over (partition by location_id, inventory_type, term_id order by term_week) as cumulative_delivered,
+	sum(decommissioned) over (partition by location_id, inventory_type, term_id order by term_week) as cumulative_decommissioned 
 from weekly_inventory i 
+where location = 'Takano' and inventory_type = 'charge cable' 
 order by term_id, location_id, term_week
