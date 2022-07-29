@@ -8,7 +8,8 @@
 with inventory_table as (
 select
 	l.id as location_id,
-	l.name as location_name,
+	l.name as location,
+	l.country,
 	tw.term_id,
 	tw.week as week,
     tw.week_number as term_week, 
@@ -33,7 +34,8 @@ left join {{source('airbyte', 'inventory_allocation')}} ia on ia.location_id = l
 weekly_inventory as (
 select
 	location_id,
-	location_name,
+	location,
+	country,
 	term_id,
     week,
 	term_week,
@@ -44,14 +46,15 @@ select
 	sum(coalesce(decommissioned,0)) as decommissioned,
 	sum(coalesce(to_replace,0)) as to_replace
 from inventory_table  
-group by 1,2,3,4,5,6,7,8
+group by 1,2,3,4,5,6,7,8,9
 )
 
 -- 4. Final table with weekly updates
 select 
 	row_number() over( order by location_id) as id,
 	location_id,
-	location_name,
+	location,
+	country,
 	term_id,
     week,
 	term_week,
