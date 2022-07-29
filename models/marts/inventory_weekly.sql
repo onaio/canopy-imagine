@@ -69,5 +69,4 @@ select
 		) over (partition by location_id, inventory_type, term_id order by term_week) as cumulative_delivered,
 	sum(decommissioned) over (partition by location_id, inventory_type, term_id order by term_week) as cumulative_decommissioned 
 from weekly_inventory i 
-where location = 'Takano' and inventory_type = 'charge cable' 
 order by term_id, location_id, term_week
