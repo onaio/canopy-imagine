@@ -1,7 +1,7 @@
 
 ------ reporting.inventory_weekly
 --1. find different inventory types
-{%- set inventory_types = ['tablet', 'headset', 'charge cable', 'screen protector'] -%}
+{%- set inventory_types = ['tablet', 'headset', 'headset cable', 'screen protector'] -%}
 {%- set inventory_field_prefix = ['tablets', 'headsets', 'cables', 'protectors'] -%}
 
 --2. inventory table
