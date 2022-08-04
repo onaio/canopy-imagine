@@ -16,7 +16,7 @@ select
 	tw.term_name,
 	ia.inventory_type,
 	ia.quantity as expected,
-	{%- for movement in ['delivered', 'decommissioned', 'to_replace'] -%}
+	{%- for movement in ['delivered', 'decommissioned', 'lost', 'broken'] -%}
 	case 	--for each inventory type, check added,removed,to replace.  
 		{% for i in range(0, inventory_types | length) %}
 		when ((ia.inventory_type = '{{inventory_types[i]}}') and '{{movement}}' = 'delivered' and tw.week_number = 1) then ia.quantity::int
@@ -44,7 +44,8 @@ select
 	expected,
 	sum(coalesce(delivered,0)) as delivered,
 	sum(coalesce(decommissioned,0)) as decommissioned,
-	sum(coalesce(to_replace,0)) as to_replace
+	sum(coalesce(lost,0)) as lost,
+	sum(coalesce(broken,0)) as broken
 from inventory_table  
 group by 1,2,3,4,5,6,7,8,9
 )
@@ -64,10 +65,13 @@ select
 	(sum(delivered - decommissioned) over (partition by location_id, inventory_type, term_id order by term_week)) as actual,
 	case when term_week = 1 then 0 else delivered end as delivered,   -- accounts for the fact that the week1 deliveries are not happening in the field
 	decommissioned,
-	to_replace,
+	lost,
+	broken,
 	sum(case when term_week = 1 then 0 else delivered end
 		) over (partition by location_id, inventory_type, term_id order by term_week) as cumulative_delivered,
-	sum(decommissioned) over (partition by location_id, inventory_type, term_id order by term_week) as cumulative_decommissioned 
+	sum(decommissioned) over (partition by location_id, inventory_type, term_id order by term_week) as cumulative_decommissioned, 
+	sum(lost) over (partition by location_id, inventory_type, term_id order by term_week) as cumulative_lost, 
+	sum(broken) over (partition by location_id, inventory_type, term_id order by term_week) as cumulative_broken
 from weekly_inventory i 
-where inventory_type is not null
+where inventory_type is not null 
 order by term_id, location_id, term_week
