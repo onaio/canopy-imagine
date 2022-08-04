@@ -1,5 +1,5 @@
 select 
-id, 
+id::bigint, 
 uuid, 
 start,
 "end",

@@ -1,1 +1,5 @@
-select * from {{source('airbyte', 'grades')}}
+select 
+id::int, 
+name,
+comments 
+from {{source('airbyte', 'grades')}}

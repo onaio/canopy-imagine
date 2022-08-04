@@ -28,7 +28,7 @@ select
 from {{ref('stg_term_weeks')}} tw
 left join {{ref('stg_locations')}} l on tw.term_country = l.country 
 left join {{ref('monitoring_survey')}} ms on ms.week = tw.week and tw.term_id = ms.term_id and ms.location_id = l.id
-left join {{source('airbyte', 'inventory_allocation')}} ia on ia.location_id = l.id and ia.term_id = tw.term_id
+left join {{ref('stg_inventory_allocation')}} ia on ia.location_id = l.id and ia.term_id = tw.term_id
 ),
 -- 3. Weekly inventory table. Used if there are more than one survey for one location per week 
 weekly_inventory as (
