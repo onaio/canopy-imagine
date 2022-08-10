@@ -6,7 +6,7 @@ select
     country,
     admin_3_name, 
     observation_date,
-    unnest(array['setup', 'tablet_use', 'closing']) as observation_time,
+    unnest(array['1. Setup', '2. During session', '3. Closing']) as observation_time,
     unnest(array[setup_observations, tablet_use_observations, closing_observations]) as observations
 from {{ref('monitoring_survey')}}
 )
