@@ -1,3 +1,4 @@
+with data as (
 select 
     submission_id, 
     field_officer,
@@ -8,3 +9,6 @@ select
     unnest(array['setup', 'tablet_use', 'closing']) as observation_time,
     unnest(array[setup_observations, tablet_use_observations, closing_observations]) as observations
 from {{ref('monitoring_survey')}}
+)
+select * from data 
+where observations is not null and observations != 'na'
