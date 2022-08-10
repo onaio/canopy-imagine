@@ -1,6 +1,5 @@
 select 
     submission_id, 
-    observation_date,
     field_officer,
     location, 
     country,
