@@ -17,6 +17,8 @@ select
 	se.location_id,
 	se.location,
 	se.country,
+	se.field_officer,
+	se.is_last_week,
 	ce.children,
     cc.cumulative_sessions,
 	COUNT(DISTINCT se.id) as session_records,
@@ -30,4 +32,4 @@ left join {{ref('stg_country_metrics')}} cm on cm.country = se.country
 left join child_enrollment ce on ce.term_id = se.term_id and ce.location_id = se.location_id
 left join {{ref('sessions_cumulative_count')}} cc on cc.week = tw.week and cc.location_id = se.location_id and cc.term_id = tw.term_id 
 where tw.week <= current_date
-group by 1,2,3,4,5,6,7,8,9
+group by 1,2,3,4,5,6,7,8,9,10,11
