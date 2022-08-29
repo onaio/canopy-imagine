@@ -20,6 +20,8 @@ macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 
 target-path: "target"  # directory which will store compiled SQL files
+packages-install-path: ["../dbt_modules"] ## directory for external DBT dependencies. AIRBYTE ADD
+
 clean-targets:         # directories to be removed by `dbt clean`
   - "target"
   - "dbt_packages"
