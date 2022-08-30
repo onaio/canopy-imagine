@@ -14,6 +14,7 @@ select
 	tw.week as week,
     tw.week_number as term_week, 
 	tw.term_name,
+	ms.field_officer,
 	ia.inventory_type,
 	ia.quantity as expected,
 	{%- for movement in ['delivered', 'decommissioned', 'lost', 'broken'] -%}
@@ -40,6 +41,7 @@ select
     week,
 	term_week,
 	term_name,
+	field_officer,
 	inventory_type,
 	expected,
 	sum(coalesce(delivered,0)) as delivered,
@@ -47,7 +49,7 @@ select
 	sum(coalesce(lost,0)) as lost,
 	sum(coalesce(broken,0)) as broken
 from inventory_table  
-group by 1,2,3,4,5,6,7,8,9
+group by 1,2,3,4,5,6,7,8,9,10
 )
 
 -- 4. Final table with weekly updates
@@ -60,6 +62,7 @@ select
     week,
 	term_week,
 	term_name,
+	field_officer,
 	inventory_type,
 	expected,
 	(sum(delivered - decommissioned) over (partition by location_id, inventory_type, term_id order by term_week)) as actual,
