@@ -28,5 +28,5 @@ location_id,
 location,
 field_officer,
 visits,
-case when visits >= 1 then 'yes' else 'no' end as visit_confirmed
+case when visits >= 1 then 'Yes' else 'No' end as visit_confirmed
 from survey_intermediate
