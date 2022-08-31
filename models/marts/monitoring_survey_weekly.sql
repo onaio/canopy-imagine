@@ -13,7 +13,7 @@ COUNT(DISTINCT ms.id) as visits
 from {{ref('stg_term_weeks')}} tw
 left join {{ref('stg_locations') }} l on l.country = tw.term_country
 left join {{ref('stg_monitoring_survey')}}  ms on date_trunc('week',(ms.observation_date::date)) = tw.week and ms.location_id = l.id::VARCHAR 
-left join {{ref('stg_staff') }}  f on LTRIM(ms.field_officer, 'f') =l.staff_id::VARCHAR
+left join {{ref('stg_staff') }}  f on f.id = l.staff_id
 group by 1,2,3,4,5,6,7,8, ms.id, ms.start 
 order by ms.id, ms.start 
 )
