@@ -7,8 +7,7 @@ select
 	SUM(number::int) as children
 from {{ref('stg_location_enrollments')}}
 group by 1,2
-), 
-actual_vs_expected as (
+), actual_vs_expected as (
 select 
 	td.day,
 	tw.week,
@@ -28,23 +27,31 @@ left join {{ref('sessions')}} se on date_trunc('day',(se.start_time::date)) = td
 left join {{ref('stg_term_weeks')}} tw on date_trunc('week',(td.day::date)) = tw.week  and tw.term_id = se.term_id 
 left join {{ref('stg_country_metrics')}} cm on cm.country = se.country
 left join child_enrollment ce on ce.term_id = se.term_id and ce.location_id = se.location_id 
+where se.location_id is not null
 group by 1,2,3,4,5,6,7,8,9,10,11
-) 
+), max_term_week as (
+select
+	term_id,
+	MAX(term_week) as week_count
+from actual_vs_expected
+group by 1
+)
 
 select 
-	day,
-	week,
-	term_week,
-	term_id,
-	term_name, 
-	location_id,
-	location,
-	country,
-	field_officer,
-	is_last_week,
-	children,
-	actual_mins,
-	expected_mins,
-	case when actual_mins >= expected_mins*children then 1 else 0 end as fullfillment 
-from actual_vs_expected
-where location_id is not null
+	main.day,
+	main.week,
+	main.term_week,
+	main.term_id,
+	main.term_name, 
+	main.location_id,
+	main.location,
+	main.country,
+	main.field_officer,
+	main.is_last_week,
+	main.children,
+	mtw.week_count,
+	main.actual_mins,
+	main.expected_mins,
+	case when main.actual_mins >= main.expected_mins*main.children then 1 else 0 end as fullfillment 
+from actual_vs_expected main
+left join max_term_week mtw on mtw.term_id = main.term_id
