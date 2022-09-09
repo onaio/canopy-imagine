@@ -1,4 +1,4 @@
-WITH main_sessions AS (
+ WITH main_sessions AS (
 	select 
 		row_number() over( order by ts.start_time) as id,
 		ts.device_id,
@@ -56,8 +56,10 @@ select
 	ms.term_id,
 	ms.term_name,
 	ms.term_week,
-	case when date_trunc('week', start_time::timestamp)::date = rd.most_recent_date
-	then 'Yes' else 'No' end as is_last_week
+	case when date_trunc('week', start_time::timestamp)::date = rd.most_recent_date then 'Yes' else 'No' end as is_last_week,
+	case when rt.latest_term = true and ms.term_id = rt.id then 'Yes' else 'No' end as is_latest_term
 from main_sessions ms
 left join recent_data rd on rd.location_id = ms.location_id and rd.field_officer = ms.field_officer
+left join {{ref('stg_terms')}} rt on rt.country = ms.country and rt.id = ms.term_id
 order by ms.id
+
