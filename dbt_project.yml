@@ -21,7 +21,7 @@ snapshot-paths: ["snapshots"]
 
 target-path: "../build"  # directory which will store compiled SQL files
 log-path: "../logs"
-modules-path: "/tmp/dbt_modules"
+packages-install-path: "/tmp/dbt_modules"
 clean-targets:         # directories to be removed by `dbt clean`
   - "build"
   - "dbt_modules"
