@@ -19,7 +19,7 @@
 		dt.term_name,
 		tw.week_number as term_week
 	from {{ref('stg_sessions_unique')}} ts 
-	left join {{ref('stg_devices') }}  d on ts.device_id = d.serial_number and ts.country = d.country
+	left join {{ref('stg_devices') }}  d on (ts.device_id = d.serial_number and ts.country <> 'Liberia') OR (ts.device_id = d.device_id and ts.country = 'Liberia')
 	left join {{ref('devices_per_term')}} dt on 
 		d.serial_number = dt.tablet_serial_number and 
 		ts.start_time::date > dt.term_start and 
