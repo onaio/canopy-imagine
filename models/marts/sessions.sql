@@ -12,7 +12,7 @@
 		l.id as location_id,
 		l."name" as location,
 		l.admin_3_name as admin_3_name,
-		l.country,
+		ts.country,   							-- 2022.10.12. AP. Should be l.country but that join is misleading
 		s.name as field_officer,
 		date_trunc('week', start_time::timestamp)::date as week,
 		dt.term_id ,
@@ -30,7 +30,8 @@
 		date_trunc('week',(ts.start_time::date)) = tw.week  
 	left join {{ref('stg_staff')}} s on s.id = l.staff_id
 	order by device_id ,session_id
-), recent_data AS (
+), 
+recent_data AS (
 	select
 		location_id,
 		field_officer,
