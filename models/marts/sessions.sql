@@ -12,24 +12,26 @@
 		l.id as location_id,
 		l."name" as location,
 		l.admin_3_name as admin_3_name,
-		ts.country,   							-- 2022.10.12. AP. Should be l.country but that join is misleading
+		l.country,
 		s.name as field_officer,
 		date_trunc('week', start_time::timestamp)::date as week,
 		dt.term_id ,
 		dt.term_name,
 		tw.week_number as term_week
 	from {{ref('stg_sessions_unique')}} ts 
-	left join {{ref('stg_devices') }}  d on ts.device_id = d.serial_number and ts.country = d.country
+	left join {{ref('stg_devices') }}  d on 
+        (char_length(ts.device_id) > 10 and ts.device_id = d.serial_number and replace(ts.country, ' ', '') = replace(d.country, ' ','')) or 
+        (char_length(ts.device_id) < 7 and ts.device_id = d.device_id and replace(ts.country, ' ', '') = replace(d.country, ' ',''))
 	left join {{ref('devices_per_term')}} dt on 
 		d.serial_number = dt.tablet_serial_number and 
-		ts.start_time::date >= dt.term_start and 
-		ts.start_time::date <= dt.term_end
+		ts.start_time::date >= dt.term_start::date and 
+		ts.start_time::date <= dt.term_end::date
 	left join {{ref('stg_locations')}} l on dt.school_id = l.id and ts.country = l.country
 	left join {{ref('stg_term_weeks')}} tw on 
 		dt.term_id = tw.term_id and
 		date_trunc('week',(ts.start_time::date)) = tw.week  
-	left join {{ref('stg_staff')}} s on s.id = l.staff_id
-	order by device_id ,session_id
+	left join {{ref('stg_staff')}} s on s.id = l.staff_id	
+    order by device_id ,session_id
 ), 
 recent_data AS (
 	select
