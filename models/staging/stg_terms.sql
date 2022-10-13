@@ -1,6 +1,6 @@
 with latest_term_per_country as (
     select
-    country, max(id) as latest_term
+    country, max(id) filter (where start_date::date <= now()::date ) as latest_term
     from  {{source('airbyte', 'terms')}}
     group by 1
 )
