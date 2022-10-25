@@ -18,18 +18,19 @@ select
 	ia.inventory_type,
 	ia.quantity as expected,
 	{%- for movement in ['delivered', 'decommissioned', 'lost', 'broken'] -%}
-	case 	--for each inventory type, check added,removed,to replace.  
+	max(case 	--for each inventory type, check added,removed,to replace.  
 		{% for i in range(0, inventory_types | length) %}
 		when ((ia.inventory_type = '{{inventory_types[i]}}') and '{{movement}}' = 'delivered' and tw.week_number = 1) then ia.quantity::int
 		when ((ia.inventory_type = '{{inventory_types[i]}}')) then ms.{{inventory_field_prefix[i]}}_{{movement}}
 		{%- endfor %}
-	end as {{movement}}, 
+	end) as {{movement}}, 
 	{%- endfor -%}
 	'test' as test
 from {{ref('stg_term_weeks')}} tw
 left join {{ref('stg_locations')}} l on tw.term_country = l.country 
 left join {{ref('monitoring_survey')}} ms on ms.week = tw.week and tw.term_id = ms.term_id and ms.location_id = l.id
 left join {{ref('stg_inventory_allocation')}} ia on ia.location_id = l.id and ia.term_id = tw.term_id
+group by 1,2,3,4,5,6,7,8,9,10,15
 ),
 -- 3. Weekly inventory table. Used if there are more than one survey for one location per week 
 weekly_inventory as (
