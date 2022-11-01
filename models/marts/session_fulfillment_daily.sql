@@ -20,6 +20,7 @@ select
 	tw.week_number as term_week,
 	tw.term_id,
 	tw.term_name,
+	case when tw.latest_term = true then 'Yes' else 'No' end as is_latest_term,
 	se.location_id,
 	se.location,
 	se.country,
@@ -36,7 +37,7 @@ left join {{ref('stg_country_metrics')}} cm on cm.country = se.country
 left join child_enrollment_location ce on ce.term_id = se.term_id and ce.location_id = se.location_id 
 left join child_enrollment_country cec on cec.term_id = se.term_id
 where se.location_id is not null
-group by 1,2,3,4,5,6,7,8,9,10,11,12
+group by 1,2,3,4,5,6,7,8,9,10,11,12,13
 ), max_term_week as (
 select
 	term_id,
@@ -51,6 +52,7 @@ select
 	main.term_week,
 	main.term_id,
 	main.term_name, 
+	main.is_latest_term,
 	main.location_id,
 	main.location,
 	main.country,
