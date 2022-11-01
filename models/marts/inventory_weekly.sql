@@ -25,32 +25,46 @@ select
 		{%- endfor %}
 	end) as {{movement}}, 
 	{%- endfor -%}
-	'test' as test
+	'test' as test,
+	case when tw.latest_term = true then 'Yes' else 'No' end as is_latest_term
 from {{ref('stg_term_weeks')}} tw
 left join {{ref('stg_locations')}} l on tw.term_country = l.country 
 left join {{ref('monitoring_survey')}} ms on ms.week = tw.week and tw.term_id = ms.term_id and ms.location_id = l.id
 left join {{ref('stg_inventory_allocation')}} ia on ia.location_id = l.id and ia.term_id = tw.term_id
-group by 1,2,3,4,5,6,7,8,9,10,15
+group by 1,2,3,4,5,6,7,8,9,10,15,16
+), 
+-- 3. Get most recent survey data dates
+recent_survey_data AS (
+	select
+		location_id,
+		field_officer,
+		MAX(date_trunc('week', week::timestamp)::date) as most_recent_date
+	from inventory_table
+	group by 1,2
 ),
--- 3. Weekly inventory table. Used if there are more than one survey for one location per week 
+-- 4. Weekly inventory table. Used if there are more than one survey for one location per week 
 weekly_inventory as (
 select
-	location_id,
-	location,
-	country,
-	term_id,
-    week,
-	term_week,
-	term_name,
-	field_officer,
-	inventory_type,
-	expected,
-	sum(coalesce(delivered,0)) as delivered,
-	sum(coalesce(decommissioned,0)) as decommissioned,
-	sum(coalesce(lost,0)) as lost,
-	sum(coalesce(broken,0)) as broken
-from inventory_table  
-group by 1,2,3,4,5,6,7,8,9,10
+	it.location_id,
+	it.location,
+	it.country,
+	it.term_id,
+    it.week,
+	it.term_week,
+	it.term_name,
+	it.field_officer,
+	it.is_latest_term,
+	case when date_trunc('week', it.week::timestamp)::date = rd.most_recent_date then 'Yes' else 'No' end as is_last_week,
+	it.inventory_type,
+	it.expected,
+	sum(coalesce(it.delivered,0)) as delivered,
+	sum(coalesce(it.decommissioned,0)) as decommissioned,
+	sum(coalesce(it.lost,0)) as lost,
+	sum(coalesce(it.broken,0)) as broken
+	
+from inventory_table it
+left join recent_survey_data rd on rd.location_id = it.location_id and rd.field_officer = it.field_officer  
+group by 1,2,3,4,5,6,7,8,9,10,11,12
 )
 
 -- 4. Final table with weekly updates
@@ -75,7 +89,10 @@ select
 		) over (partition by location_id, inventory_type, term_id order by term_week) as cumulative_delivered,
 	sum(decommissioned) over (partition by location_id, inventory_type, term_id order by term_week) as cumulative_decommissioned, 
 	sum(lost) over (partition by location_id, inventory_type, term_id order by term_week) as cumulative_lost, 
-	sum(broken) over (partition by location_id, inventory_type, term_id order by term_week) as cumulative_broken
+	sum(broken) over (partition by location_id, inventory_type, term_id order by term_week) as cumulative_broken,
+	is_latest_term,
+	is_last_week
+	
 from weekly_inventory i 
 where inventory_type is not null 
 order by term_id, location_id, term_week
