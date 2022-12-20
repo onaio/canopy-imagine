@@ -19,4 +19,4 @@ select
         {%- endif -%}
     {% endfor %}
 from {{source('csv', 'tablet_sessions')}} 
-where start_time ='2022-09-21 12:59'
+
