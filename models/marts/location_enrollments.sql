@@ -22,6 +22,7 @@ select
     le.location_id,
     l.name as location,
     l.country,
+    p.name as partner,
     le.grade_id, 
     g.name as grade,
     le.number,
@@ -30,6 +31,7 @@ select
 from 
 {{ref('stg_location_enrollments')}} le 
 left join {{ref('stg_terms')}} t on le.term_id = t.id
+left join {{ ref('stg_partners') }} p on t.partner_id::int = p.id
 left join {{ref('locations')}} l on le.location_id = l.id
 left join {{ref('stg_grades')}} g on le.grade_id = g.id
 left join max_week mw on mw.term_id = le.term_id and mw.location_id = le.location_id

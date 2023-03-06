@@ -24,6 +24,7 @@ select
 	se.location_id,
 	se.location,
 	se.country,
+    se.partner,
 	se.field_officer,
 	se.is_last_week,
 	ce.children,
@@ -37,7 +38,7 @@ left join {{ref('stg_country_metrics')}} cm on cm.country = se.country
 left join child_enrollment_location ce on ce.term_id = se.term_id and ce.location_id = se.location_id 
 left join child_enrollment_country cec on cec.term_id = se.term_id
 where se.location_id is not null
-group by 1,2,3,4,5,6,7,8,9,10,11,12,13
+group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14
 ), max_term_week as (
 select
 	term_id,
@@ -56,6 +57,7 @@ select
 	main.location_id,
 	main.location,
 	main.country,
+    main.partner,
 	main.field_officer,
 	main.is_last_week,
 	main.children,
