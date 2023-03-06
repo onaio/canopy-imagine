@@ -22,6 +22,7 @@ ms.uuid,
 ms.start,
 ms.end,
 l.country,
+p.name as partner,
 f.name as field_officer,
 l.id as location_id,
 l."name" as location,
@@ -71,4 +72,5 @@ left join {{ref('stg_term_weeks')}}  tw on
 left join tablet_delivery t on t.parent_id = ms.id
 left join tablet_decommissioned d on d.parent_id = ms.id
 left join {{ref('stg_staff') }}  f on LTRIM(ms.field_officer, 'f') =f.id::VARCHAR
+left join {{ ref('stg_partners') }} p on f.partner_id::int = p.id
 order by ms.id, ms.start 

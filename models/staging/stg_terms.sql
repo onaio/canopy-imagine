@@ -6,6 +6,7 @@ with latest_term_per_country as (
 )
 select 
 id::int,
+partner_id,
 t.country,
 name,
 start_date::date,

@@ -1,6 +1,7 @@
 with data as (
 select 
-    submission_id, 
+    submission_id,
+    partner, 
     field_officer,
     location, 
     country,

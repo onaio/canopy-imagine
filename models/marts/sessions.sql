@@ -13,6 +13,7 @@
 		l."name" as location,
 		l.admin_3_name as admin_3_name,
 		l.country,
+        p.name as partner,
 		s.name as field_officer,
 		date_trunc('week', start_time::timestamp)::date as week,
 		dt.term_id ,
@@ -30,7 +31,8 @@
 	left join {{ref('stg_term_weeks')}} tw on 
 		dt.term_id = tw.term_id and
 		date_trunc('week',(ts.start_time::date)) = tw.week  
-	left join {{ref('stg_staff')}} s on s.id = l.staff_id	
+	left join {{ref('stg_staff')}} s on s.id = l.staff_id
+    left join {{ ref('stg_partners') }} p on s.partner_id::int = p.id	
     order by device_id ,session_id
 ), 
 recent_data AS (
@@ -56,6 +58,7 @@ select
 	ms.location,
 	ms.admin_3_name,
 	ms.country,
+    ms.partner,
 	ms.field_officer,
 	ms.week,
 	ms.term_id,
