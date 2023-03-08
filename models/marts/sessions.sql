@@ -1,9 +1,10 @@
  WITH main_sessions AS (
 	select 
 		row_number() over( order by ts.start_time) as id,
-		ts.country as tablet_country,
+		l.country as tablet_country,
 		ts.device_id,
 		user_id, 
+        code, 
 		start_time::timestamp ,
 		end_time::timestamp ,
 		duration ,
@@ -21,13 +22,13 @@
 		tw.week_number as term_week
 	from {{ref('stg_sessions_unique')}} ts 
 	left join {{ref('stg_devices') }}  d on 
-        (char_length(ts.device_id) > 10 and ts.device_id = d.serial_number and replace(ts.country, ' ', '') = replace(d.country, ' ','')) or 
-        (char_length(ts.device_id) < 7 and ts.device_id = d.device_id and replace(ts.country, ' ', '') = replace(d.country, ' ',''))
+        (ts.device_id = d.serial_number ) or 
+        (ts.device_id = d.device_id )  -- 2023.03.08 this logic handles the picking of the device_id OR serial_number for joining because the data from the tablets is often inconsistent
 	left join {{ref('devices_per_term')}} dt on 
 		d.serial_number = dt.tablet_serial_number and 
 		ts.start_time::date >= dt.term_start::date and 
 		ts.start_time::date <= dt.term_end::date
-	left join {{ref('stg_locations')}} l on dt.school_id = l.id and ts.country = l.country
+	left join {{ref('stg_locations')}} l on dt.school_id = l.id 
 	left join {{ref('stg_term_weeks')}} tw on 
 		dt.term_id = tw.term_id and
 		date_trunc('week',(ts.start_time::date)) = tw.week  
@@ -49,6 +50,7 @@ select
 	ms.device_id,
 	ms.tablet_country,
 	ms.user_id, 
+    ms.code,
 	ms.start_time::timestamp,
 	ms.end_time::timestamp,
 	ms.duration,
@@ -70,5 +72,4 @@ from main_sessions ms
 left join recent_data rd on rd.location_id = ms.location_id and rd.field_officer = ms.field_officer
 left join {{ref('stg_terms')}} rt on rt.country = ms.country and rt.id = ms.term_id
 order by ms.id
-
 

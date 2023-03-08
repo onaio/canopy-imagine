@@ -1,7 +1,6 @@
  select 
     ROW_NUMBER() OVER(PARTITION BY device_id, code, start_time, duration ORDER BY start_time asc) AS row_copy,
     device_id || code || start_time || duration AS session_unique_id,
-    country,
     device_id,
     user_id, 
     session_id, 
