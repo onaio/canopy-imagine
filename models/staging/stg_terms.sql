@@ -7,7 +7,7 @@ with latest_term_per_country as (
 select 
 id::int,
 partner_id,
-t.country,
+rtrim(t.country) as country,
 name,
 start_date::date,
 end_date::date,
