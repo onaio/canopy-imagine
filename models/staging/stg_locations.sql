@@ -4,7 +4,7 @@ lat::float,
 lon::float,
 name,
 type,
-country,
+RTRIM(country) as country,
 staff_id::int,
 admin_3_name
 from {{source('airbyte', 'locations')}}
