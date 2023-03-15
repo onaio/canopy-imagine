@@ -1,7 +1,7 @@
 select 
 term_id::int,
 location_id::int,
-inventory_type,
+rtrim(inventory_type) as inventory_type,
 quantity::int
 from 
 {{source('airbyte', 'inventory_allocation')}}
