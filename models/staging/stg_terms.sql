@@ -8,7 +8,7 @@ select
 id::int,
 partner_id,
 rtrim(t.country) as country,
-name,
+rtrim(name) as name,
 start_date::date,
 end_date::date,
 case when lt.latest_term is not null then true else false end as latest_term,
