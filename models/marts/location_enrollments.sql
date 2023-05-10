@@ -22,6 +22,8 @@ select
     le.location_id,
     l.name as location,
     l.country,
+    l.lat,
+    l.lon,
     p.name as partner,
     le.grade_id, 
     g.name as grade,
