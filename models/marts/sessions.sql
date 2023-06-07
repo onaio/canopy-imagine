@@ -23,7 +23,7 @@
 	from {{ref('stg_sessions_unique')}} ts 
 	left join {{ref('stg_devices') }}  d on 
         (ts.device_id = d.serial_number ) or 
-        (ts.device_id = d.device_id )  -- 2023.03.08 this logic handles the picking of the device_id OR serial_number for joining because the data from the tablets is often inconsistent
+        (ts.device_id = d.device_id )  -- 2023.03.08 AP this logic handles the picking of the device_id OR serial_number for joining because the data from the tablets is often inconsistent
 	left join {{ref('devices_per_term')}} dt on 
 		d.serial_number = dt.tablet_serial_number and 
 		ts.start_time::date >= dt.term_start::date and 
@@ -73,3 +73,23 @@ left join recent_data rd on rd.location_id = ms.location_id and rd.field_officer
 left join {{ref('stg_terms')}} rt on rt.country = ms.country and rt.id = ms.term_id
 order by ms.id
 
+{# need to fix this: pick only the 1st instance of a session for each device. Then insert new ones. 
+{{
+    config(
+        materialized='incremental'
+    )
+}}
+
+select
+    *,
+    my_slow_function(my_column)
+
+from raw_app_data.events
+
+{% if is_incremental() %}
+
+  -- this filter will only be applied on an incremental run
+  where event_time > (select max(event_time) from {{ this }})
+
+{% endif %}
+#}
