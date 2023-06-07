@@ -2,13 +2,13 @@
     'playzone_time', 'literacy_time', 'numeracy_time', 'literacy_level', 'numeracy_level'] %}
 
 select 
-    country,
-    device_id,
+    rtrim(country) as country,
+    rtrim(device_id) as device_id,
     case when user_id = '' then NULL::int else round(user_id::real) end as user_id, 
     case when session_id = '' then NULL::int else round(session_id::real) end as session_id, 
-    code,
-    mode, 
-    language,
+    rtrim(code) as code,
+    rtrim(mode) as mode, 
+    rtrim(language) as language,
     start_time::timestamp,
     end_time::timestamp,
     duration,

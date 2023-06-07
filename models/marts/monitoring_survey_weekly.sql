@@ -5,6 +5,8 @@ tw.week_number as term_week,
 tw.term_id,
 tw.term_name,
 l.country,
+l.lat,
+l.lon,
 p.name as partner,
 f.name as field_officer,
 l.id as location_id,
@@ -18,7 +20,7 @@ left join {{ref('stg_location_enrollments') }} le on le.location_id = l.id and l
 left join {{ref('stg_monitoring_survey')}}  ms on date_trunc('week',(ms.observation_date::date)) = tw.week and ms.location_id = l.id::VARCHAR 
 left join {{ref('stg_staff') }}  f on f.id = l.staff_id
 left join {{ ref('stg_partners') }} p on f.partner_id::int = p.id
-group by 1,2,3,4,5,6,7,8,9, ms.id, ms.start 
+group by 1,2,3,4,5,6,7,8,9,10,11, ms.id, ms.start 
 order by ms.id, ms.start 
 )
 
@@ -30,6 +32,8 @@ term_name,
 country,
 location_id,
 location,
+lat,
+lon,
 partner,
 field_officer,
 total_enrollment,

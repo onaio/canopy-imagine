@@ -22,17 +22,21 @@ select
     le.location_id,
     l.name as location,
     l.country,
+    l.lat,
+    l.lon,
     p.name as partner,
     le.grade_id, 
     g.name as grade,
     le.number,
     ti.location_tablets,
-    case when t.latest_term = true then 'Yes' else 'No' end as is_latest_term
+    case when t.latest_term = true then 'Yes' else 'No' end as is_latest_term,
+    f.name as field_officer
 from 
 {{ref('stg_location_enrollments')}} le 
 left join {{ref('stg_terms')}} t on le.term_id = t.id
 left join {{ ref('stg_partners') }} p on t.partner_id::int = p.id
 left join {{ref('locations')}} l on le.location_id = l.id
+left join {{ ref('stg_staff') }} f on f.id = l.staff_id
 left join {{ref('stg_grades')}} g on le.grade_id = g.id
 left join max_week mw on mw.term_id = le.term_id and mw.location_id = le.location_id
 left join tablet_inventory ti on ti.term_id = le.term_id and ti.location_id = le.location_id and ti.term_week = mw.max_term_week

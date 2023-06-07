@@ -1,6 +1,6 @@
 select 
 id::int,
-country,
-device_id,
-serial_number 
+rtrim(country) as country,
+rtrim(device_id) as device_id,
+rtrim(serial_number) as serial_number 
 from {{source('airbyte', 'devices')}}
