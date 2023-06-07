@@ -1,0 +1,7 @@
+version: 2
+
+models:
+  - name: sessions
+    tests:
+    - dbt_utils.equal_rowcount:
+        compare_model: ref('stg_sessions_unique')
