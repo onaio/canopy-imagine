@@ -9,7 +9,7 @@
     language,
     start_time,
     end_time,
-    duration,
+    (literacy_time + numeracy_time + playzone_time +  diagnostic_time)::int as duration,
     study_units,
     playzone_units,
     library_units,
