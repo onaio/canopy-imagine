@@ -20,9 +20,7 @@ sources:
       database: imagine
       schema: csv
       tables:
-        #AP. 2022.07.07. note: this table is here only for now. Needs to be replaced once sessions is in its final state (update stg_sessions to pull from the right source)
         - name: tablet_sessions  
-
     - name: ona_data
       database: imagine
       schema: ona_data  
@@ -30,3 +28,10 @@ sources:
         - name: monitoring_crs_pilot
         - name: monitoring_crs_pilot_tablet_repeat
         - name: monitoring_crs_pilot_decommission_repeat
+    - name: eidu
+      database: imagine
+      schema: eidu  
+      tables:
+        - name: _airbyte_raw_session
+        - name: _airbyte_raw_unit
+        - name: _airbyte_raw_device_info
