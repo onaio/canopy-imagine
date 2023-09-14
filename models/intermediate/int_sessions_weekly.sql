@@ -1,5 +1,3 @@
----- session data weekly 
---- does not include field officer details as there is no single associated field officer
 with child_enrollment as (
 select
 	term_id,
@@ -21,6 +19,7 @@ select
 	se.is_last_week,
 	ce.children,
     cc.cumulative_sessions,
+	COUNT(DISTINCT se.device_id) as reporting_devices,
 	COUNT(DISTINCT se.id) as session_records,
 	SUM(se.duration/60) as actual_mins,
 	AVG(cm.value::int) as expected_mins
