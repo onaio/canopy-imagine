@@ -3,8 +3,6 @@
 		row_number() over( order by ts.start_time) as id,
 		l.country as tablet_country,
 		ts.device_id,
-		user_id, 
-        code, 
 		start_time::timestamp ,
 		end_time::timestamp ,
 		duration ,
@@ -20,7 +18,7 @@
 		dt.term_id ,
 		dt.term_name,
 		tw.week_number as term_week
-	from {{ref('stg_sessions_unique')}} ts 
+	from {{ref('stg_unique_usb_sessions')}} ts 
 	left join {{ref('stg_devices') }}  d on 
         (ts.device_id = d.serial_number ) or 
         (ts.device_id = d.device_id )  -- 2023.03.08 AP this logic handles the picking of the device_id OR serial_number for joining because the data from the tablets is often inconsistent
@@ -49,8 +47,6 @@ select
 	ms.id,
 	ms.device_id,
 	ms.tablet_country,
-	ms.user_id, 
-    ms.code,
 	ms.start_time::timestamp,
 	ms.end_time::timestamp,
 	ms.duration,

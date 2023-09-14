@@ -31,30 +31,16 @@ with main as (
         ) }}
     from main
     group by session_id   
-),  device_info as (
-    select
-        (d._airbyte_data->>'peer_id') as peer_id,
-        d._airbyte_data->>'device_id' as device_id,
-        d._airbyte_data->>'serial' as serial_number
-    from {{source('eidu', '_airbyte_raw_device_info')}} d
-), devices as (
-    select
-        distinct on (d.peer_id) peer_id,
-        d.device_id,
-        d.serial_number
-    from device_info d
 )
-
 
 
 select
     d.device_id,
-    d.serial_number,
-    s._airbyte_data->>'session_id' as session_id,
+    s._airbyte_data->>'iw_session_id' as session_id,
     s._airbyte_data->>'mode' as mode,
     s._airbyte_data->>'lang' as language,
-    s._airbyte_data->>'start_time' as start_time,
-    s._airbyte_data->>'end_time' as end_time,
+    date_trunc('minute', (s._airbyte_data->>'start_time')::timestamp) as start_time,
+    date_trunc('minute', (s._airbyte_data->>'end_time')::timestamp) as end_time,
     (s._airbyte_data->>'duration')::INT as duration,
     {% for unit in units %}
         ut.{{unit}} as {{unit}}_time,
@@ -66,6 +52,6 @@ select
         {%- endif -%}
     {% endfor %}
 from {{source('eidu', '_airbyte_raw_session')}}  s
-left join devices d ON s._airbyte_data->>'peer_id' = d.peer_id
+left join {{ref("stg_eidu_devices")}} d ON s._airbyte_data->>'peer_id' = d.peer_id
 left join unit_types ut on s._airbyte_data->>'session_id' = ut.session_id
 left join unit_topics tpc on s._airbyte_data->>'session_id' = tpc.session_id
