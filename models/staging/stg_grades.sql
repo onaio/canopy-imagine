@@ -1,5 +1,5 @@
 select 
 id::int, 
 rtrim(name) as name,
-rtrim(comments) as comments 
-from {{source('airbyte', 'grades')}}
+rtrim(description) as comments 
+from {{source('directus', 'grades')}}

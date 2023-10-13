@@ -1,6 +1,5 @@
 select
     id::int,
     rtrim(name) as name,
-    rtrim(comment) as comment,
-    last_modified_at
+    rtrim(comment) as comment
 from {{ source('airbyte', 'partners') }}

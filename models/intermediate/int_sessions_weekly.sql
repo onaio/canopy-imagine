@@ -27,7 +27,7 @@ select
 from {{ref('stg_term_days')}} td
 left join {{ref('sessions')}} se on date_trunc('day',(se.start_time::date)) = td.day and td.term_id = se.term_id 
 left join {{ref('stg_term_weeks')}} tw on date_trunc('week',(td.day::date)) = tw.week  and tw.term_id = se.term_id 
-left join {{ref('stg_country_metrics')}} cm on cm.country = se.country
+left join {{ref('stg_country_metrics')}} cm on cm.country = se.country and cm.partner = se.partner
 left join child_enrollment ce on ce.term_id = se.term_id and ce.location_id = se.location_id
 left join {{ref('sessions_cumulative_count')}} cc on cc.week = tw.week and cc.location_id = se.location_id and cc.term_id = tw.term_id 
 where tw.week <= current_date

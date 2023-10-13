@@ -9,7 +9,6 @@ sources:
         - name: country_metrics
         - name: device_allocation
         - name: devices
-        - name: grade_names
         - name: grades
         - name: inventory_allocation
         - name: location_enrollments
@@ -43,7 +42,6 @@ sources:
         - name: countries
         - name: device_allocation
         - name: devices
-        - name: grade_names
         - name: grades
         - name: location_enrollments
         - name: locations
