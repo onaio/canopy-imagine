@@ -9,7 +9,6 @@ sources:
         - name: country_metrics
         - name: device_allocation
         - name: devices
-        - name: grade_names
         - name: grades
         - name: inventory_allocation
         - name: location_enrollments
@@ -35,3 +34,24 @@ sources:
         - name: _airbyte_raw_session
         - name: _airbyte_raw_unit
         - name: _airbyte_raw_device_info
+    - name: directus
+      database: imagine
+      schema: directus
+      tables:
+        - name: accessory_movements
+        - name: countries
+        - name: device_allocation
+        - name: devices
+        - name: grades
+        - name: location_enrollments
+        - name: locations
+        - name: metric_targets
+        - name: metrics 
+        - name: partners
+        - name: partners_countries
+        - name: staff
+        - name: staff_role_history
+        - name: staff_roles
+        - name: terms 
+
+      
