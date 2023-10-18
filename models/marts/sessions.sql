@@ -18,7 +18,7 @@
 		dt.term_id ,
 		dt.term_name,
 		tw.week_number as term_week
-	from {{ref('stg_unique_usb_sessions')}} ts 
+	from {{ref('stg_unique_sessions')}} ts 
 	left join {{ref('stg_devices') }}  d on 
         (ts.device_id = d.serial_number ) or 
         (ts.device_id = d.device_id )  -- 2023.03.08 AP this logic handles the picking of the device_id OR serial_number for joining because the data from the tablets is often inconsistent

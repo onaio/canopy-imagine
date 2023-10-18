@@ -29,7 +29,7 @@ sources:
         - name: monitoring_crs_pilot_decommission_repeat
     - name: eidu
       database: imagine
-      schema: eidu  
+      schema: eidu_parquet  
       tables:
         - name: _airbyte_raw_session
         - name: _airbyte_raw_unit

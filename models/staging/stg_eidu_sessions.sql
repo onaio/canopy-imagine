@@ -4,11 +4,11 @@
 with main as (
     select
         s._airbyte_data->>'session_id' as session_id,
-        u._airbyte_data->'data'->>'unit_topic' as unit_topic,
-        u._airbyte_data->'data'->>'type' as unit_type,
+        ((u._airbyte_data->>'_airbyte_data')::json->>'data')::json->>'unit_topic' as unit_topic,
+        ((u._airbyte_data->>'_airbyte_data')::json->>'data')::json->>'type' as unit_type,
         (u._airbyte_data->>'duration')::INT as unit_duration
     from {{source('eidu', '_airbyte_raw_session')}}  s
-    left join {{source('eidu', '_airbyte_raw_unit')}} u ON s._airbyte_data->>'session_id' = u._airbyte_data->>'session_id'
+    left join {{source('eidu', '_airbyte_raw_unit')}} u ON s._airbyte_data->>'session_id' = (u._airbyte_data->>'_airbyte_data')::json->>'session_id'
 ), unit_types as (
     select
         session_id,
@@ -30,6 +30,7 @@ with main as (
             then_value='unit_duration'
         ) }}
     from main
+    where unit_type = 'study'
     group by session_id   
 )
 
@@ -39,8 +40,8 @@ select
     s._airbyte_data->>'iw_session_id' as session_id,
     s._airbyte_data->>'mode' as mode,
     s._airbyte_data->>'lang' as language,
-    date_trunc('minute', (s._airbyte_data->>'start_time')::timestamp) as start_time,
-    date_trunc('minute', (s._airbyte_data->>'end_time')::timestamp) as end_time,
+    date_trunc('minute', to_timestamp((s._airbyte_data->>'start_time')::bigint / 1000)) as start_time,
+    date_trunc('minute', to_timestamp((s._airbyte_data->>'end_time')::bigint / 1000)) as end_time,
     (s._airbyte_data->>'duration')::INT as duration,
     {% for unit in units %}
         ut.{{unit}} as {{unit}}_time,
