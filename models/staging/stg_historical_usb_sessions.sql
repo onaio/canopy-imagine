@@ -1,6 +1,7 @@
 {% set importedfields = ['study_units', 'playzone_units','library_units', 'diagnostic_time', 'study_time', 
     'playzone_time', 'literacy_time', 'numeracy_time', 'literacy_level', 'numeracy_level'] %}
 
+with main as (
 select 
     rtrim(device_id) as device_id,
     case when user_id = '' then NULL::int else round(user_id::real) end as user_id, 
@@ -12,10 +13,12 @@ select
     end_time::timestamp,
     duration,
     {% for field in importedfields %}
-        round(nullif({{field}},'')::real) as {{field}}
-        {%- if not loop.last -%}
-        ,    
-        {%- endif -%}
+        round(nullif({{field}},'')::real) as {{field}},
     {% endfor %}
+    coalesce(processed_at, '1970-01-01'::timestamp) as processed_at
 from {{source('csv', 'tablet_sessions')}} 
+)
 
+select *,
+    device_id || code || start_time || duration AS session_unique_id
+from main

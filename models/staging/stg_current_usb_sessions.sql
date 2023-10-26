@@ -1,6 +1,7 @@
 {% set importedfields = ['study_units', 'playzone_units','library_units', 'diagnostic_time', 'study_time', 
     'playzone_time', 'literacy_time', 'numeracy_time', 'literacy_level', 'numeracy_level'] %}
 
+with main as (
 select 
     rtrim(device_id) as device_id,
     round(user_id::real) as user_id, 
@@ -12,9 +13,13 @@ select
     end_time::timestamp,
     duration,
     {% for field in importedfields %}
-        round({{field}}::real) as {{field}}
-        {%- if not loop.last -%}
-        ,    
-        {%- endif -%}
+        round({{field}}::real) as {{field}},
     {% endfor %}
+    _airbyte_normalized_at as processed_at
+
 from {{source('device_logs', 'usb_sessions')}} 
+)
+
+select *,
+    device_id || code || start_time || duration AS session_unique_id
+from main

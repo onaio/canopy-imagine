@@ -4,10 +4,10 @@ with main as (
     ) }}
  ) 
  
- 
+
  select 
-    ROW_NUMBER() OVER(PARTITION BY device_id, code, start_time, duration ORDER BY start_time asc) AS row_copy,
-    device_id || code || start_time || duration AS session_unique_id,
+    ROW_NUMBER() OVER(PARTITION BY session_unique_id ORDER BY start_time asc) AS row_copy,
+    session_unique_id,
     device_id, 
     session_id,
     mode, 
