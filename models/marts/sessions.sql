@@ -1,6 +1,13 @@
- WITH main_sessions AS (
+{{
+    config(
+        materialized='incremental',
+        unique_key='id'
+    )
+}}
+
+WITH main_sessions AS (
 	select 
-		row_number() over( order by ts.start_time) as id,
+		session_unique_id as id,
 		l.country as tablet_country,
 		ts.device_id,
 		start_time::timestamp ,
@@ -17,7 +24,8 @@
 		date_trunc('week', start_time::timestamp)::date as week,
 		dt.term_id ,
 		dt.term_name,
-		tw.week_number as term_week
+		tw.week_number as term_week, 
+        ts.processed_at
 	from {{ref('stg_unique_sessions')}} ts 
 	left join {{ref('stg_devices') }}  d on 
         (ts.device_id = d.serial_number ) or 
@@ -62,30 +70,18 @@ select
 	ms.term_id,
 	ms.term_name,
 	ms.term_week,
+    ms.processed_at, 
 	case when date_trunc('week', start_time::timestamp)::date = rd.most_recent_date then 'Yes' else 'No' end as is_last_week,
 	case when rt.latest_term = true and ms.term_id = rt.id then 'Yes' else 'No' end as is_latest_term
 from main_sessions ms
 left join recent_data rd on rd.location_id = ms.location_id and rd.field_officer = ms.field_officer
 left join {{ref('stg_terms')}} rt on rt.country = ms.country and rt.id = ms.term_id
-order by ms.id
-
-{# need to fix this: pick only the 1st instance of a session for each device. Then insert new ones. 
-{{
-    config(
-        materialized='incremental'
-    )
-}}
-
-select
-    *,
-    my_slow_function(my_column)
-
-from raw_app_data.events
 
 {% if is_incremental() %}
 
   -- this filter will only be applied on an incremental run
-  where event_time > (select max(event_time) from {{ this }})
+  where processed_at > (select max(processed_at) from {{ this }})
 
 {% endif %}
-#}
+
+order by ms.id
