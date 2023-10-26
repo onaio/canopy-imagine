@@ -1,3 +1,10 @@
+with main as (
+    {{ dbt_utils.union_relations(
+        relations=[ref('stg_historical_usb_sessions'), ref('stg_current_usb_sessions')]
+    ) }}
+ ) 
+ 
+ 
  select 
     ROW_NUMBER() OVER(PARTITION BY device_id, code, start_time, duration ORDER BY start_time asc) AS row_copy,
     device_id || code || start_time || duration AS session_unique_id,
@@ -18,4 +25,4 @@
     numeracy_time,
     literacy_level,
     numeracy_level
-from {{ref('stg_sessions')}}
+from main

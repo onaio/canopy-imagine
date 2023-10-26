@@ -3,12 +3,12 @@
 
 with main as (
     select
-        s._airbyte_data->>'session_id' as session_id,
-        ((u._airbyte_data->>'_airbyte_data')::json->>'data')::json->>'unit_topic' as unit_topic,
-        ((u._airbyte_data->>'_airbyte_data')::json->>'data')::json->>'type' as unit_type,
-        (u._airbyte_data->>'duration')::INT as unit_duration
-    from {{source('eidu', '_airbyte_raw_session')}}  s
-    left join {{source('eidu', '_airbyte_raw_unit')}} u ON s._airbyte_data->>'session_id' = (u._airbyte_data->>'_airbyte_data')::json->>'session_id'
+        s.session_id,
+        u.data::json->>'unit_topic' as unit_topic,
+        u.data::json->>'type' as unit_type,
+        u.duration as unit_duration
+    from {{source('device_logs', 'sessions')}}  s
+    left join {{source('device_logs', 'units')}} u ON s.session_id = u.session_id
 ), unit_types as (
     select
         session_id,
@@ -32,27 +32,30 @@ with main as (
     from main
     where unit_type = 'study'
     group by session_id   
+), sessions as (
+    select
+        d.device_id,
+        s.iw_session_id as session_id,
+        s.mode as mode,
+        s.lang as language,
+        date_trunc('minute', to_timestamp((s.start_time)/1000)) as start_time,
+        date_trunc('minute', to_timestamp((s.end_time)/1000)) as end_time,
+        {% for unit in units %}
+            ut.{{unit}} as {{unit}}_time,
+        {% endfor %}
+        {% for topic in topics %}
+            tpc.{{topic}} as {{topic}}_time
+            {%- if not loop.last -%}
+            ,    
+            {%- endif -%}
+        {% endfor %}
+    from {{source('device_logs', 'sessions')}}  s
+    left join {{ref("stg_eidu_devices")}} d ON s.peer_id = d.peer_id
+    left join unit_types ut on s.session_id = ut.session_id
+    left join unit_topics tpc on s.session_id = tpc.session_id
 )
 
-
 select
-    d.device_id,
-    s._airbyte_data->>'iw_session_id' as session_id,
-    s._airbyte_data->>'mode' as mode,
-    s._airbyte_data->>'lang' as language,
-    date_trunc('minute', to_timestamp((s._airbyte_data->>'start_time')::bigint / 1000)) as start_time,
-    date_trunc('minute', to_timestamp((s._airbyte_data->>'end_time')::bigint / 1000)) as end_time,
-    (s._airbyte_data->>'duration')::INT as duration,
-    {% for unit in units %}
-        ut.{{unit}} as {{unit}}_time,
-    {% endfor %}
-    {% for topic in topics %}
-        tpc.{{topic}} as {{topic}}_time
-        {%- if not loop.last -%}
-        ,    
-        {%- endif -%}
-    {% endfor %}
-from {{source('eidu', '_airbyte_raw_session')}}  s
-left join {{ref("stg_eidu_devices")}} d ON s._airbyte_data->>'peer_id' = d.peer_id
-left join unit_types ut on s._airbyte_data->>'session_id' = ut.session_id
-left join unit_topics tpc on s._airbyte_data->>'session_id' = tpc.session_id
+    *,
+    (literacy_time + numeracy_time + library_time +  diagnostic_time)::int as duration
+from sessions
