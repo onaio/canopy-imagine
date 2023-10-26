@@ -5,16 +5,7 @@ sources:
       database: imagine_warehouse_temp
       schema: airbyte
       tables:
-        - name: terms
-        - name: country_metrics
-        - name: device_allocation
-        - name: devices
-        - name: grades
         - name: inventory_allocation
-        - name: location_enrollments
-        - name: locations 
-        - name: partners
-        - name: staff 
     - name: csv
       database: imagine_warehouse_temp
       schema: csv
@@ -27,13 +18,14 @@ sources:
         - name: monitoring_crs_pilot
         - name: monitoring_crs_pilot_tablet_repeat
         - name: monitoring_crs_pilot_decommission_repeat
-    - name: eidu
+    - name: device_logs
       database: imagine_warehouse_temp
-      schema: eidu_parquet  
+      schema: device_logs  
       tables:
-        - name: _airbyte_raw_session
-        - name: _airbyte_raw_unit
-        - name: _airbyte_raw_device_info
+        - name: sessions
+        - name: units
+        - name: devices
+        - name: usb_sessions
     - name: directus
       database: imagine_warehouse_temp
       schema: directus
