@@ -2,7 +2,7 @@ version: 2
 
 sources:
     - name: airbyte
-      database: imagine
+      database: imagine_warehouse_temp
       schema: airbyte
       tables:
         - name: terms
@@ -16,26 +16,26 @@ sources:
         - name: partners
         - name: staff 
     - name: csv
-      database: imagine
+      database: imagine_warehouse_temp
       schema: csv
       tables:
         - name: tablet_sessions  
     - name: ona_data
-      database: imagine
+      database: imagine_warehouse_temp
       schema: ona_data  
       tables:
         - name: monitoring_crs_pilot
         - name: monitoring_crs_pilot_tablet_repeat
         - name: monitoring_crs_pilot_decommission_repeat
     - name: eidu
-      database: imagine
+      database: imagine_warehouse_temp
       schema: eidu_parquet  
       tables:
         - name: _airbyte_raw_session
         - name: _airbyte_raw_unit
         - name: _airbyte_raw_device_info
     - name: directus
-      database: imagine
+      database: imagine_warehouse_temp
       schema: directus
       tables:
         - name: accessory_movements
