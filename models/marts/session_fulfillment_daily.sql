@@ -29,6 +29,7 @@ select
 	se.is_last_week,
 	ce.children,
 	cec.children_country,
+    count(se.id) as session_records,
 	SUM(se.duration/60) as actual_mins,
 	AVG(cm.value::int) as expected_mins
 from {{ref('stg_term_days')}} td
