@@ -1,6 +1,3 @@
-select * from dbt_afuad.stg_eidu_sessions
-
-{#
 {{
     config(
         materialized='incremental'
@@ -30,6 +27,3 @@ left join {{ref("stg_eidu_units")}} u on s.session_id = u.session_id
   where s._airbyte_emitted_at > (select max(_airbyte_emitted_at) from {{ this }})
 
 {% endif %}
-
-
-#}
