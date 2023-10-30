@@ -5,6 +5,7 @@ select
     l.name as location,
     l.type,
     l.country,
+    l.admin_3_name,
     ws.week,
 	ws.term_week,
 	ws.term_id,

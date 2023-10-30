@@ -21,6 +21,7 @@ select
     t.name as term_name,
     le.location_id,
     l.name as location,
+    l.admin_3_name,
     l.country,
     l.lat,
     l.lon,
