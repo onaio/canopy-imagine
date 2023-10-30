@@ -23,6 +23,7 @@ select
 	case when tw.latest_term = true then 'Yes' else 'No' end as is_latest_term,
 	se.location_id,
 	se.location,
+    se.admin_3_name, --2023.10.30 AP: district pulled as admin 3 until location hierarchy is clarified
 	se.country,
     se.partner,
 	se.field_officer,
@@ -39,7 +40,7 @@ left join {{ref('stg_country_metrics')}} cm on cm.country = se.country and cm.pa
 left join child_enrollment_location ce on ce.term_id = se.term_id and ce.location_id = se.location_id 
 left join child_enrollment_country cec on cec.term_id = se.term_id
 where se.location_id is not null
-group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14
+group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 ), max_term_week as (
 select
 	term_id,
@@ -57,6 +58,7 @@ select
 	main.is_latest_term,
 	main.location_id,
 	main.location,
+    main.admin_3_name,
 	main.country,
     main.partner,
 	main.field_officer,
