@@ -12,6 +12,7 @@ select
 	tw.week_number as term_week,
 	tw.term_id,
 	tw.term_name,
+    se.partner,
 	se.location_id,
 	se.location,
 	se.country,
@@ -31,4 +32,4 @@ left join {{ref('stg_country_metrics')}} cm on cm.country = se.country and cm.pa
 left join child_enrollment ce on ce.term_id = se.term_id and ce.location_id = se.location_id
 left join {{ref('sessions_cumulative_count')}} cc on cc.week = tw.week and cc.location_id = se.location_id and cc.term_id = tw.term_id 
 where tw.week <= current_date
-group by 1,2,3,4,5,6,7,8,9,10,11
+group by 1,2,3,4,5,6,7,8,9,10,11,12

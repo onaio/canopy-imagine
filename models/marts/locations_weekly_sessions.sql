@@ -10,6 +10,7 @@ select
 	ws.term_week,
 	ws.term_id,
 	ws.term_name,
+    we.partner,
 	ws.field_officer,
 	ws.is_last_week,
 	ws.children,
