@@ -28,7 +28,7 @@ WITH main_sessions AS (
 		dtd.week_number as term_week, 
         ts.processed_at
 	from {{ref('stg_unique_sessions')}} ts 
-    left join {{ ref('stg_devices_per_term_details') }} dtd 
+    left join {{ ref('stg_devices_per_week') }} dtd 
     on 
        ( (ts.device_id = dtd.serial_number ) or (ts.device_id = dtd.device_id ) ) -- 2023.03.08 AP this logic handles the picking of the device_id OR serial_number for joining because the data from the tablets is often inconsistent
        and date_trunc('week', ts.start_time::timestamp)::date = dtd.week

@@ -1,3 +1,11 @@
+--2023.10.31 Might need to replace with _int_sessions_weekly entirely
+
+{{
+    config(
+        materialized='table'
+    )
+}}
+
 select
     l.id as location_id, 
     l.lat::float,
@@ -16,10 +24,9 @@ select
 	ws.children,
     ws.cumulative_sessions,
 	ws.reporting_devices,
-    ia.quantity as allocated_devices,
+    ws.allocated_devices,
 	ws.session_records,
 	ws.actual_mins,
 	ws.expected_mins
-from {{ref("stg_locations")}} l
-left join {{ref("int_sessions_weekly")}} ws on l.id = ws.location_id
-left join {{ref("stg_inventory_allocation")}} ia on l.id = ia.location_id and ws.term_id = ia.term_id and ia.inventory_type = 'tablet'
+from {{ref("int_locations_weekly")}} ws
+left join {{ref("stg_locations")}} l on l.id = ws.location_id
