@@ -22,5 +22,4 @@ select
 	ws.expected_mins
 from {{ref("stg_locations")}} l
 left join {{ref("int_sessions_weekly")}} ws on l.id = ws.location_id
-left join {{ref("stg_inventory_allocation")}} ia on l.id = ia.location_id and ws.term_id = ia.term_id
-where ia.inventory_type = 'tablet'
+left join {{ref("stg_inventory_allocation")}} ia on l.id = ia.location_id and ws.term_id = ia.term_id and ia.inventory_type = 'tablet'
