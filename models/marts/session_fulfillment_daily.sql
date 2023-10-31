@@ -7,13 +7,7 @@ select
 	SUM(number::int) as children
 from {{ref('stg_location_enrollments')}}
 group by 1,2
-), child_enrollment_country as (
-select
-	term_id,
-	SUM(number::int) as children_country
-from {{ref('stg_location_enrollments')}}
-group by 1
-), actual_vs_expected as (
+),  actual_vs_expected as (
 select 
 	td.day,
 	tw.week,
@@ -29,7 +23,6 @@ select
 	se.field_officer,
 	se.is_last_week,
 	ce.children,
-	cec.children_country,
     count(se.id) as session_records,
 	SUM(se.duration/60) as actual_mins,
 	AVG(cm.value::int) as expected_mins
