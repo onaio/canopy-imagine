@@ -22,7 +22,6 @@ select
 	ws.field_officer,
 	ws.is_last_week,
 	ws.children,
-    ws.cumulative_sessions,
 	ws.reporting_devices,
     ws.allocated_devices,
 	ws.session_records,

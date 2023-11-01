@@ -33,16 +33,7 @@ WITH main_sessions AS (
        ( (ts.device_id = dtd.serial_number ) or (ts.device_id = dtd.device_id ) ) -- 2023.03.08 AP this logic handles the picking of the device_id OR serial_number for joining because the data from the tablets is often inconsistent
        and date_trunc('week', ts.start_time::timestamp)::date = dtd.week
 )
-{#, 
-recent_data AS (
-	select
-		location_id,
-		field_officer,
-		MAX(date_trunc('week', start_time::timestamp)::date) as most_recent_date
-	from main_sessions 
-	group by 1,2
-)
-#}
+
 select
 	ms.id,
 	ms.device_id,

@@ -1,5 +1,10 @@
+Select 1 
+
+{# 2023.11.01 AP Deleted for now. Unsure if needed at all. Problem is that daily does not wrap up to weekly easily 
+
 ---- reporting.daily_fulfillment
--- needs testing with updated dataset due to missing records
+-- 2023.11.01 AP: needs testing with updated dataset due to missing records. Probably refactoring or dropping entirely. 
+
 with child_enrollment_location as (
 select
 	term_id,
@@ -64,3 +69,4 @@ select
 	case when main.actual_mins >= main.expected_mins*main.children then 1 else 0 end as fullfillment 
 from actual_vs_expected main
 left join max_term_week mtw on mtw.term_id = main.term_id
+#}
