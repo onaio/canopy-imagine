@@ -39,6 +39,7 @@ sources:
         - name: locations
         - name: metric_targets
         - name: metrics 
+        - name: partner_countries
         - name: partners
         - name: partners_countries
         - name: staff
