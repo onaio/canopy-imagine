@@ -1,4 +1,4 @@
-Select 1 
+Select 'Malawi' as country, 1 as number  
 
 {# 2023.11.01 AP Deleted for now. Unsure if needed at all. Problem is that daily does not wrap up to weekly easily 
 
