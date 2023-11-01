@@ -18,7 +18,7 @@ select
 	tw.term_id,
 	ce.term_name,
     ce.partner,
-	se.location_id,
+	ce.location_id,
 	ce.location,
 	ce.country,
 	ce.field_officer,

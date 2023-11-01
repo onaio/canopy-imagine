@@ -27,5 +27,5 @@ select
 	ws.session_records,
 	ws.actual_mins,
 	ws.expected_mins
-from {{ref("int_locations_weekly")}} ws
-left join {{ref("stg_locations")}} l on l.id = ws.location_id
+from {{ref('int_locations_weekly')}} ws
+left join {{ref('stg_locations')}} l on l.id = ws.location_id
