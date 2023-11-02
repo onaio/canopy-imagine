@@ -22,11 +22,10 @@ select
 	ws.field_officer,
 	ws.is_last_week,
 	ws.children,
-    ws.cumulative_sessions,
 	ws.reporting_devices,
     ws.allocated_devices,
 	ws.session_records,
 	ws.actual_mins,
 	ws.expected_mins
-from {{ref("int_locations_weekly")}} ws
-left join {{ref("stg_locations")}} l on l.id = ws.location_id
+from {{ref('int_locations_weekly')}} ws
+left join {{ref('stg_locations')}} l on l.id = ws.location_id
