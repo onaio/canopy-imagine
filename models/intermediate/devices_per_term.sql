@@ -26,4 +26,4 @@ left join  {{ref('stg_devices') }}  d on
 left join {{ref('stg_terms')}} t on da.term_id = t.id
 left join {{ref('stg_locations')}} l on da.location_id = l.id 
 left join {{ref('stg_staff')}} s on s.id = l.staff_id
-left join {{ref('stg_partners') }} p on s.partner_id::int = p.id	
+left join {{ref('stg_partners') }} p on s.partner_id::int = p.id
