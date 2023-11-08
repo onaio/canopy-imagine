@@ -1,8 +1,8 @@
-{{
+{# {{
     config(
         materialized='incremental'
     )
-}}
+}} #}
 
 with device_info as (
     select
@@ -22,8 +22,8 @@ with device_info as (
 
 select *
 from device_dedup
-{% if is_incremental() %}
+{# {% if is_incremental() %}
 
   where _airbyte_emitted_at > (select max(_airbyte_emitted_at) from {{ this }})
 
-{% endif %}
+{% endif %} #}

@@ -1,10 +1,10 @@
-{{
+{# {{
     config(
         materialized='incremental',
         unique_key='id'
     )
 }}
-
+ #}
 WITH main_sessions AS (
 	select 
 		session_unique_id as id,
@@ -59,8 +59,8 @@ select
 	NULL as is_latest_term --AP. 2023.10.27 AP: aiming to simplify. Original: case when rt.latest_term = true and ms.term_id = rt.id then 'Yes' else 'No' end as is_latest_term
 from main_sessions ms
 
-{% if is_incremental() %}
+{# {% if is_incremental() %}
 
   -- this filter will only be applied on an incremental run
   where processed_at > (select max(processed_at) from {{ this }})
-{% endif %}
+{% endif %} #}

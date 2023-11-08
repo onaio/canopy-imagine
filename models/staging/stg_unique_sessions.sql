@@ -1,9 +1,9 @@
-{{
+{# {{
     config(
         materialized='incremental',
         unique_key='session_unique_id'
     )
-}}
+}} #}
 
 with main as (
     {{ dbt_utils.union_relations(
@@ -46,7 +46,7 @@ with main as (
 
 select * 
 from sessions_dedup
-{% if is_incremental() %}
+{# {% if is_incremental() %}
 -- this filter will only be applied on an incremental run
 where processed_at > (select max(processed_at) from {{ this }})
-{% endif %}
+{% endif %} #}
