@@ -1,9 +1,9 @@
-{# {{
+{{
     config(
         materialized='incremental',
         unique_key='session_id'
     )
-}} #}
+}}
 
 {% set units = ['diagnostic', 'study', 'library'] %}
 {% set topics = ['literacy', 'numeracy'] %}
@@ -19,8 +19,8 @@
     max(_airbyte_emitted_at) as _airbyte_emitted_at
   from {{ ref('stg_device_units') }} u
 
-{#   {% if is_incremental() %}
+  {% if is_incremental() %}
   where _airbyte_emitted_at > (select max(_airbyte_emitted_at) from {{ this }})
-{% endif %} #}
+{% endif %}
   group by 1
 

@@ -1,8 +1,8 @@
-{# {{
+{{
     config(
         materialized='incremental'
     )
-}} #}
+}}
 
 select
     d.device_id,
@@ -23,8 +23,8 @@ from {{source('device_logs', 'sessions')}} s
 left join {{ref("stg_eidu_devices")}} d on s.peer_id = d.peer_id
 left join {{ref("stg_eidu_units")}} u on s.session_id = u.session_id
 
-{# {% if is_incremental() %}
+{% if is_incremental() %}
 
   where s._airbyte_emitted_at > (select max(_airbyte_emitted_at) from {{ this }})
 
-{% endif %} #}
+{% endif %}

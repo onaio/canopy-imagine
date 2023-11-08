@@ -1,14 +1,14 @@
-{# {{
+{{
     config(
         materialized='incremental',
         unique_key='id'
     )
-}} #}
+}}
 
 select *
 from {{ref("sessions")}}
 where country = 'Malawi'
-{# {% if is_incremental() %}
+{% if is_incremental() %}
   -- this filter will only be applied on an incremental run
   and processed_at > (select max(processed_at) from {{ this }})
-{% endif %} #}
+{% endif %}
