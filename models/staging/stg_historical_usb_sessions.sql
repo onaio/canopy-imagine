@@ -11,7 +11,6 @@ select
     rtrim(language) as language,
     start_time::timestamp,
     end_time::timestamp,
-    duration,
     {% for field in importedfields %}
         round(nullif({{field}},'')::real) as {{field}},
     {% endfor %}
@@ -19,6 +18,8 @@ select
 from {{source('csv', 'tablet_sessions')}} 
 )
 
-select *,
-    device_id || code || start_time || duration AS session_unique_id
+select
+    *,
+    (literacy_time + numeracy_time + playzone_time + diagnostic_time)::int as duration,
+    device_id || code || start_time || coalesce((literacy_time + numeracy_time + playzone_time + diagnostic_time)::text,'') as session_unique_id
 from main
