@@ -9,6 +9,7 @@ select
 	COUNT(DISTINCT id) as session_records,
 	SUM(coalesce(duration,0))/60 as actual_mins
     from {{ref('sessions')}}
+	where duration notnull and duration > 0
     group by 1,2,3
 )
 
