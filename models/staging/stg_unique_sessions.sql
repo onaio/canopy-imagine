@@ -36,7 +36,7 @@ with main as (
         coalesce(processed_at, _airbyte_emitted_at) as processed_at
     from main
 ), sessions_dedup as (
-    {{ dbt_utils.deduplicate(
+    {{ dbt_utils.deduplicate(   
         relation='main_coalesce',
         partition_by='session_unique_id',
         order_by='processed_at desc',
