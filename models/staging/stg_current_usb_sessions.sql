@@ -22,5 +22,5 @@ from {{source('device_logs', 'usb_sessions')}}
 select 
     *,
     (literacy_time + numeracy_time + playzone_time + diagnostic_time)::int as duration,
-    device_id || code || start_time || coalesce((literacy_time + numeracy_time + playzone_time + diagnostic_time)::text,'') AS session_unique_id
+    device_id || coalesce(code,'nocode') || start_time || coalesce((literacy_time + numeracy_time + playzone_time + diagnostic_time)::text,'') AS session_unique_id
 from main
