@@ -30,7 +30,7 @@ WITH main_sessions AS (
 	from {{ref('stg_unique_sessions')}} ts 
     left join {{ ref('stg_devices_per_week') }} dtd 
     on 
-       ( (ts.device_id = dtd.serial_number ) or (ts.device_id = dtd.device_id ) ) -- 2023.03.08 AP this logic handles the picking of the device_id OR serial_number for joining because the data from the tablets is often inconsistent
+    (ts.device_id = dtd.device_id ) 
        and date_trunc('week', ts.start_time::timestamp)::date = dtd.week
 )
 
