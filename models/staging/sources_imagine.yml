@@ -46,5 +46,8 @@ sources:
         - name: staff_role_history
         - name: staff_roles
         - name: terms 
-
-      
+    - name: data_corrections
+      database: imagine_warehouse_temp
+      schema: data_corrections  
+      tables:
+        - name: schools_data_removal
