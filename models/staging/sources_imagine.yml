@@ -51,3 +51,8 @@ sources:
       schema: data_corrections  
       tables:
         - name: schools_data_removal
+    - name: commcare
+      database: imagine_warehouse_temp
+      schema: commcare
+      tables:
+        - name: weekly_monitoring_survey
