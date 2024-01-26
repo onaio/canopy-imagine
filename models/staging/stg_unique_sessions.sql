@@ -1,52 +1,13 @@
-{{
-    config(
-        materialized='incremental',
-        unique_key='session_unique_id'
-    )
-}}
+{% set columns = ['device_id', 'session_id', 'mode', 'language', 'start_time', 'end_time', 'duration', 'diagnostic_time', 'study_time', 'numeracy_time', 'session_unique_id'] %}
 
-with main as (
-    {{ dbt_utils.union_relations(
-        relations=[ref('stg_historical_usb_sessions'), ref('stg_current_usb_sessions'), ref('stg_filtered_eidu_sessions')]
-    ) }}
-), main_coalesce as(
-    select
-        _dbt_source_relation,
-        device_id,
-        user_id,
-        session_id,
-        code,
-        mode,
-        language,
-        start_time,
-        end_time,
-        duration,
-        study_units,
-        playzone_units,
-        library_units,
-        diagnostic_time,
-        study_time,
-        playzone_time,
-        literacy_time,
-        numeracy_time,
-        library_time,
-        literacy_level,
-        numeracy_level,
-        session_unique_id,
-        coalesce(processed_at, _airbyte_emitted_at) as processed_at
-    from main
-), sessions_dedup as (
-    {{ dbt_utils.deduplicate(   
-        relation='main_coalesce',
-        partition_by='session_unique_id',
-        order_by='processed_at desc',
-    )
-    }}
-)
+select
+    {% for column in columns %}
+        coalesce(u.{{column}}, e.{{column}}) as {{column}},
+    {% endfor %}
+    coalesce(u.playzone_time, e.library_time) as library_time,
+    case when u.session_unique_id notnull then 'T' else 'F' end as usb,
+    case when e.session_unique_id notnull then 'T' else 'F' end as eidu,
+    coalesce(u.processed_at, e._airbyte_emitted_at) as processed_at
+from {{ref("stg_usb_sessions_unique")}} u
+full outer join {{ref("stg_eidu_sessions_unique")}} e on u.session_unique_id = e.session_unique_id
 
-select * 
-from sessions_dedup
-{% if is_incremental() %}
--- this filter will only be applied on an incremental run
-where processed_at > (select max(processed_at) from {{ this }})
-{% endif %}

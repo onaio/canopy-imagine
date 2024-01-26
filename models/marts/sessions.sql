@@ -13,9 +13,7 @@ WITH main_sessions AS (
         dtd.serial_number,
 		start_time::timestamp ,
 		end_time::timestamp ,
-		duration ,
-		literacy_level ,
-		numeracy_level ,
+		duration,
 		dtd.location_id,
 		dtd.location,
 		dtd.admin_3_name,
@@ -25,7 +23,9 @@ WITH main_sessions AS (
 		dtd.week,
 		dtd.term_id ,
 		dtd.term_name,
-		dtd.week_number as term_week, 
+		dtd.week_number as term_week,
+		usb,
+		eidu,
         ts.processed_at
 	from {{ref('stg_unique_sessions')}} ts 
     left join {{ ref('stg_devices_per_week') }} dtd 
@@ -42,8 +42,6 @@ select
 	ms.start_time::timestamp,
 	ms.end_time::timestamp,
 	ms.duration,
-	ms.literacy_level,
-	ms.numeracy_level,
 	ms.location_id,
 	ms.location,
 	ms.admin_3_name,
