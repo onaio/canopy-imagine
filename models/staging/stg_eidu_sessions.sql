@@ -1,13 +1,14 @@
 {{
     config(
-        materialized='incremental'
+        materialized='incremental',
+        unique_key='session_unique_id'
     )
 }}
 
 select
     d.device_id,
     s.iw_session_id as session_id,
-    d.device_id || s.start_time  as session_unique_id,  --2023.10.27 AP. Need to reconcile how to create a unique id between eidu and usb
+    d.device_id || '-'|| s.iw_session_id || '-' ||(date_trunc('day', to_timestamp((s.start_time)/1000))::date)  as session_unique_id,  --2023.10.27 AP. Need to reconcile how to create a unique id between eidu and usb
     s.mode as mode,
     s.lang as language,
     date_trunc('minute', to_timestamp((s.start_time)/1000)) as start_time,

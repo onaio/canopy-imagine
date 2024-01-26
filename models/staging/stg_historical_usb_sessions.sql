@@ -21,5 +21,5 @@ from {{source('csv', 'tablet_sessions')}}
 select
     *,
     (literacy_time + numeracy_time + playzone_time + diagnostic_time)::int as duration,
-    device_id || code || start_time || coalesce((literacy_time + numeracy_time + playzone_time + diagnostic_time)::text,'') as session_unique_id
+    device_id || '-'|| coalesce(session_id::text,'') || '-' || (date_trunc('day', start_time)::date) as session_unique_id
 from main
