@@ -1,6 +1,6 @@
 select 
 s.id::int,
-rtrim(concat(first_name, last_name)) as name,
+rtrim(concat(first_name, ' ', last_name)) as name,
 rtrim(sr.name) as role,
 supervisor_id,
 rtrim(c.name) as country,
