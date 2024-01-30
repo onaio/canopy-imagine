@@ -1,10 +1,3 @@
-{{
-    config(
-        materialized='incremental',
-        unique_key='session_unique_id'
-    )
-}}
-
 with main as (
     {{ dbt_utils.union_relations(
         relations=[ref('stg_historical_usb_sessions'), ref('stg_current_usb_sessions'), ref('stg_filtered_eidu_sessions')]
