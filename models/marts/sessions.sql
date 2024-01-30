@@ -52,6 +52,8 @@ select
 	ms.term_id,
 	ms.term_name,
 	ms.term_week,
+	usb,
+	eidu,
     ms.processed_at, 
 	NULL as is_last_week, --AP. 2023.10.27 AP: aiming to simplify. Original: case when date_trunc('week', start_time::timestamp)::date = rd.most_recent_date then 'Yes' else 'No' end as is_last_week,
 	NULL as is_latest_term --AP. 2023.10.27 AP: aiming to simplify. Original: case when rt.latest_term = true and ms.term_id = rt.id then 'Yes' else 'No' end as is_latest_term
