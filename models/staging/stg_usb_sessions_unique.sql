@@ -1,3 +1,9 @@
+{{
+    config(
+        materialized='table'
+    )
+}}
+
 with usb_union as (
     {{ dbt_utils.union_relations(
         relations=[ref('stg_historical_usb_sessions'), ref('stg_current_usb_sessions')]
