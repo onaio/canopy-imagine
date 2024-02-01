@@ -1,7 +1,6 @@
 {{
     config(
-        materialized='incremental',
-        unique_key='session_id'
+        materialized='incremental'
     )
 }}
 

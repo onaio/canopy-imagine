@@ -1,4 +1,4 @@
-{% set columns = ['device_id', 'session_id', 'mode', 'language', 'start_time', 'end_time', 'duration', 'diagnostic_time', 'study_time', 'numeracy_time', 'session_unique_id'] %}
+{% set columns = ['device_id', 'mode', 'language', 'start_time', 'end_time', 'duration', 'diagnostic_time', 'study_time', 'numeracy_time', 'session_unique_id'] %}
 
 select
     {% for column in columns %}
