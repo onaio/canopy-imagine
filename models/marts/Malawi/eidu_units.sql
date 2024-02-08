@@ -5,5 +5,5 @@ select
     u.*
 from  {{ref("stg_device_units")}} u
 left join {{ref("stg_eidu_sessions")}} s on u.session_id = s.session_id
-where s.start_time >= date_trunc('week', current_date - interval '2 weeks')
-  and s.start_time < date_trunc('week', current_date)
+where s.start_time >= '2023-10-23'
+  and s.start_time <= '2023-11-03' --this specific time filter was specified by the client
