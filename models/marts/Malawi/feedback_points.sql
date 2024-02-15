@@ -1,9 +1,9 @@
 select
     formid,
-    school_id,
+    location_id,
     country,
-    school_name,
-    partner_name,
+    location,
+    partner,
     observation_date,
     observation_week,
     replace(regexp_split_to_table(feedback_to_teacher , ' '), '_', ' ') as feedback_to_teacher
