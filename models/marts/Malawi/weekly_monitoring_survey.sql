@@ -1,12 +1,36 @@
-select 
-    wms.*,
-    observaton_date::date as observation_date,
-    p.name as iwon_partner_name,
-    s.name as iwon_staff_name,
-    l.name as iwon_school_name,
-    l.country as iwon_country
-from {{source ('commcare', 'weekly_monitoring_survey')}} wms
-left join {{ref("stg_partners")}} p on wms.iwon_partner_id  = p.id::text
-left join {{ref("stg_staff")}}s on wms.iwon_user_id = s.id::text
-left join {{ref("stg_locations")}} l on wms.iwon_school_id = l.id::text
-where observaton_date != '---' and observaton_date != ''
+select
+   formid,
+   iwon_school_id as school_id,
+   observation_date,
+   date_trunc('week', observation_date)::date as observation_week,
+   received_on,
+   iwon_country as country,
+   iwon_partner_name as partner_name,
+   iwon_school_name as school_name,
+   iwon_staff_name as staff_name,
+   country as commcare_country,
+   hq_user as commcare_user,
+   username as commcare_username,
+   school_name as commcare_school_name,
+   partner_organization as commcare_partner_name,
+   minutes_used,
+   started_time,
+   time_on_task,
+   observe_setup,
+   completed_time,
+   session_rating,
+   absent_students,
+   action_needed_iw,
+   first_time_issue,
+   identified_issues,
+   issue_description,
+   other_observation,
+   recollection_time,
+   action_needed_pimu,
+   session_start_time,
+   feedback_to_teacher,
+   minutes_teacher_away,
+   sessions_previous_week,
+   no_sessions_previous_week
+from {{ref("int_weekly_monitoring_survey")}}
+where observe_setup = 'yes' or observe_setup = 'no'
