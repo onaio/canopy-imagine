@@ -4,7 +4,7 @@ select
     coalesce(avg(session_rating::int),0) as rolling_session_rating
 from {{ref("reference_weeks")}} rw
 cross join (select distinct id from {{ref("locations")}}) l
-left join {{ref("weekly_monitoring_survey")}} ms on ms.observation_date < (rw.week + interval '6 days')::date
+left join {{ref("weekly_monitoring_survey")}} ms on ms.observation_date <= (rw.week + interval '6 days')::date
     and ms.observation_date >= rw.week - interval '5 weeks'
     and ms.location_id::int = l.id
 where rw.week >= '2024-01-01' and rw.week <= current_date
