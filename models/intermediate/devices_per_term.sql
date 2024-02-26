@@ -19,7 +19,8 @@ select
     l.admin_3_name as admin_3_name,
     l.country,
     p.name as partner,
-    s.name as field_officer
+    s.name as field_officer,
+    l.date_launched
 from {{ref('stg_device_allocation')}} da 
 left join  {{ref('stg_devices') }}  d on 
 		d.serial_number = da.tablet_serial_number 

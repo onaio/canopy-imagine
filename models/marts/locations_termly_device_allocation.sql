@@ -9,7 +9,8 @@ select
     le.field_officer,
     le.lat,
     le.lon,
+    le.date_launched,
     coalesce(allocated_devices, 0) as allocated_devices
 from {{ ref('location_enrollments') }} le
 left join {{ref("int_devices_allocated")}} da on le.location_id = da.location_id and le.partner_term_id = da.term_id
-group by 1,2,3,4,5,6,7,8,9,10,11
+group by 1,2,3,4,5,6,7,8,9,10,11,12

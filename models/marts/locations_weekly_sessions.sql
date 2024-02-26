@@ -14,6 +14,7 @@ select
     l.type,
     l.country,
     l.admin_3_name,
+    l.date_launched,
     ws.week,
 	ws.term_week,
 	ws.term_id,

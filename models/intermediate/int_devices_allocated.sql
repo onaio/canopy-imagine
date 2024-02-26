@@ -12,6 +12,7 @@ select
     country,
     partner,
     field_officer,
+    date_launched,
     count(device_id) as allocated_devices
 from {{ ref("devices_per_term") }}
-group by 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+group by 1,2,3,4,5,6,7,8,9,10,11
