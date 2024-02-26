@@ -10,6 +10,7 @@ select
     l.country,
     l.lat,
     l.lon,
+    l.date_launched,
     p.name as partner,
     le.grade_id, 
     g.name as grade,

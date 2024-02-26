@@ -20,7 +20,8 @@ select
     l.admin_3_name as admin_3_name,
     l.country,
     p.name as partner,
-    s.name as field_officer
+    s.name as field_officer,
+	l.date_launched
 from location_total_enrollment  da
 left join {{ref('stg_terms')}} t on da.term_id = t.id
 left join {{ref('stg_locations')}} l on da.location_id = l.id 

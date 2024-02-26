@@ -22,6 +22,7 @@ select
 	ce.location_id,
 	ce.location,
 	ce.country,
+	ce.date_launched,
 	ce.field_officer,
 	se.is_last_week,
 	ce.children,

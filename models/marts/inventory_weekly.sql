@@ -27,12 +27,13 @@ select
 	end) as {{movement}}, 
 	{%- endfor -%}
 	'test' as test,
-	case when tw.latest_term = true then 'Yes' else 'No' end as is_latest_term
+	case when tw.latest_term = true then 'Yes' else 'No' end as is_latest_term,
+	l.date_launched
 from {{ref('stg_term_weeks')}} tw
 left join {{ref('stg_locations')}} l on tw.term_country = l.country 
 left join {{ref('monitoring_survey')}} ms on ms.week = tw.week and tw.term_id = ms.term_id and ms.location_id = l.id
 left join {{ref('stg_inventory_allocation')}} ia on ia.location_id = l.id and ia.term_id = tw.term_id
-group by 1,2,3,4,5,6,7,8,9,10,11,16,17
+group by 1,2,3,4,5,6,7,8,9,10,11,16,17,18
 ), 
 -- 3. Get most recent survey data dates
 recent_survey_data AS (
@@ -59,6 +60,7 @@ select
 	case when date_trunc('week', it.week::timestamp)::date = rd.most_recent_date then 'Yes' else 'No' end as is_last_week,
 	it.inventory_type,
 	it.expected,
+	it.date_launched,
 	sum(coalesce(it.delivered,0)) as delivered,
 	sum(coalesce(it.decommissioned,0)) as decommissioned,
 	sum(coalesce(it.lost,0)) as lost,
@@ -66,7 +68,7 @@ select
 	
 from inventory_table it
 left join recent_survey_data rd on rd.location_id = it.location_id and rd.field_officer = it.field_officer  
-group by 1,2,3,4,5,6,7,8,9,10,11,12,13
+group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14
 )
 
 -- 4. Final table with weekly updates
@@ -83,6 +85,7 @@ select
 	field_officer,
 	inventory_type,
 	expected,
+	date_launched,
 	(sum(delivered - decommissioned) over (partition by location_id, inventory_type, term_id order by term_week)) as actual,
 	case when term_week = 1 then 0 else delivered end as delivered,   -- accounts for the fact that the week1 deliveries are not happening in the field
 	decommissioned,
