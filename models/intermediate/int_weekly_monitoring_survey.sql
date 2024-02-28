@@ -8,6 +8,7 @@ select
     s.name as iwon_staff_name,
     l.name as iwon_school_name,
     l.country as iwon_country,
+    l.admin_3_name,
     l.date_launched
 from {{source ('commcare', 'weekly_monitoring_survey')}} wms
 left join {{ref("stg_partners")}} p on wms.iwon_partner_id  = p.id::text
