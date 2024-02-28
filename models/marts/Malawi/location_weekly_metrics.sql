@@ -1,6 +1,7 @@
 select
     location_id,
     country,
+    admin_3_name,
     location,
     date_launched,
     partner,

@@ -8,6 +8,7 @@ select
 	term_id,
 	term_name,
    iwon_country as country,
+   admin_3_name,
    iwon_partner_name as partner,
    iwon_school_name as location,
    iwon_staff_name as field_officer,

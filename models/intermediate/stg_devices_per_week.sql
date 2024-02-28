@@ -16,8 +16,9 @@ select
     dt.country,
     dt.partner,
     dt.field_officer,
-    dt.term_id ,
+    dt.term_id,
     dt.term_name,
+    dt.date_launched,
     tw.week,
     tw.week_number
 from 
