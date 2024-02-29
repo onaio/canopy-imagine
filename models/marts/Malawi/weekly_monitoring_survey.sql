@@ -1,6 +1,6 @@
 select
    formid,
-   iwon_school_id::int as location_id,
+   case when iwon_school_id = '' then null else iwon_school_id::int end as location_id,
    observation_date,
    date_trunc('week', observation_date)::date as week,
    received_on,
