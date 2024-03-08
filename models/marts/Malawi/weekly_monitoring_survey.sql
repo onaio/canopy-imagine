@@ -1,8 +1,8 @@
 select
    formid,
    case when iwon_school_id = '' then null else iwon_school_id::int end as location_id,
-   observation_date,
-   date_trunc('week', observation_date)::date as week,
+   observation_date::date,
+   date_trunc('week', observation_date::date)::date as week,
    received_on,
    term_week,
 	term_id,
@@ -36,6 +36,10 @@ select
    feedback_to_teacher,
    minutes_teacher_away,
    sessions_previous_week,
-   no_sessions_previous_week
+   no_sessions_previous_week,
+   latitude,
+	longitude,
+	case when gps_accuracy = '' then null else gps_accuracy::float end as gps_accuracy,
+   ST_Distance(ST_Point(longitude, latitude)::GEOGRAPHY,ST_Point(school_longitude, school_latitude)::GEOGRAPHY)/1000 as distance
 from {{ref("int_weekly_monitoring_survey")}}
 where observe_setup = 'yes' or observe_setup = 'no'
