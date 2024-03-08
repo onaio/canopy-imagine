@@ -40,6 +40,6 @@ select
    latitude,
 	longitude,
 	case when gps_accuracy = '' then null else gps_accuracy::float end as gps_accuracy,
-   ST_Distance(ST_Point(longitude, latitude)::GEOGRAPHY,ST_Point(school_longitude, school_latitude)::GEOGRAPHY)/1000 as distance
+   ST_Distance(ST_Point(longitude, latitude)::GEOGRAPHY,ST_Point(school_longitude, school_latitude)::GEOGRAPHY)/1000 as distance_from_school
 from {{ref("int_weekly_monitoring_survey")}}
 where observe_setup = 'yes' or observe_setup = 'no'
